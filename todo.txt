@@ -4,4 +4,4 @@ Design - Divyansh
 
 FrontEnd - Sarvochcha & Pranshu
 
-BackEnd - Manish & Manasa
+BackEnd - Manish & Shubham
