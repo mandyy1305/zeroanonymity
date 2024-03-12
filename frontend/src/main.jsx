@@ -8,14 +8,13 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import Home from "./components/Home.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route
-      path="/"
-      element={<App />}
-      errorElement={<div>Page Not Found!</div>}
-    ></Route>
+    <Route path="/" element={<App />} errorElement={<div>Page Not Found!</div>}>
+      <Route index element={<Home />} />
+    </Route>
   )
 );
 
