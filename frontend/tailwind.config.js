@@ -2,7 +2,19 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        hero: "url('./src/img/ZeroAnonymityHeroText.svg')",
+        hindi: "url('./src/img/Namaste.svg')",
+        russian: "url('./src/img/RussianMeKuchKuch.svg')",
+        spanish: "url('./src/img/Hola.svg')",
+        japnese: "url('./src/img/Konichiwa.svg')",
+        trail: "url('./src/img/Trail.svg')",
+      },
+      boxShadow: {
+        "3xl": "0px 5px rgba(0, 0, 0, 1)",
+      },
+    },
   },
   plugins: [],
 };
