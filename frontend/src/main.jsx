@@ -9,11 +9,15 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Home from "./components/Home.jsx";
+import About from "./pages/About.jsx";
+import Contact from "./pages/Contact.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />} errorElement={<div>Page Not Found!</div>}>
       <Route index element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
     </Route>
   )
 );

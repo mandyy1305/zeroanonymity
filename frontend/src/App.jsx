@@ -5,7 +5,7 @@ import { CiMenuBurger } from "react-icons/ci";
 
 function App() {
   return (
-    <div className=" w-screen max-w-screen-2xl h-screen mx-auto overflow-x-hidden">
+    <div className=" w-screen max-w-screen-2xl h-screen mx-auto ">
       <nav className="flex items-center justify-between h-24">
         <Link to="/" className="w-36 absolute left-6">
           <img src={logo} alt="Logo" />
