@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, NavLink } from "react-router-dom";
 import logo from "./img/Z-AnonymityLogo.svg";
 
 import { IoMenu } from "react-icons/io5";
@@ -15,10 +15,30 @@ function App() {
           <img src={logo} alt="Logo" />
         </Link>
         <div className="hidden lg:flex justify-center items-center w-full gap-24 font-semibold text-lg ">
-          <Link className="hover:text-blue-800 hover:text-xl " to="/">Home</Link>
-          <Link className="hover:text-blue-800 hover:text-xl " to="/faq">FAQ</Link>
-          <Link className="hover:text-blue-800 hover:text-xl " to="/about">About</Link>
-          <Link className="hover:text-blue-800 hover:text-xl " to="/contact">Contact</Link>
+          <NavLink
+            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            to="/"
+          >
+            Home
+          </NavLink>
+          <NavLink
+            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            to="/faq"
+          >
+            FAQ
+          </NavLink>
+          <NavLink
+            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            to="/about"
+          >
+            About
+          </NavLink>
+          <NavLink
+            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            to="/contact"
+          >
+            Contact
+          </NavLink>
         </div>
         <IoMenu
           className="lg:hidden absolute right-6"
