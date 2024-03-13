@@ -11,14 +11,14 @@ function App() {
   return (
     <div className="flex flex-col w-screen h-screen max-w-screen-2xl mx-auto ">
       <nav className="flex items-center justify-between h-24">
-        <Link to="/" className="w-36 absolute left-6">
+        <Link to="/" className="w-36 relative left-6">
           <img src={logo} alt="Logo" />
         </Link>
-        <div className="hidden lg:flex justify-center items-center w-full gap-24 font-semibold text-lg">
-          <Link to="/">Home</Link>
-          <Link to="/faq">FAQ</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
+        <div className="hidden lg:flex justify-center items-center w-full gap-24 font-semibold text-lg ">
+          <Link className="hover:text-blue-800 hover:text-xl " to="/">Home</Link>
+          <Link className="hover:text-blue-800 hover:text-xl " to="/faq">FAQ</Link>
+          <Link className="hover:text-blue-800 hover:text-xl " to="/about">About</Link>
+          <Link className="hover:text-blue-800 hover:text-xl " to="/contact">Contact</Link>
         </div>
         <IoMenu
           className="lg:hidden absolute right-6"
