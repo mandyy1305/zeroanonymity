@@ -11,6 +11,8 @@ import {
 import Home from "./components/Home.jsx";
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
+import EnterUsername from "./pages/EnterUsername.jsx";
+import Chats from "./pages/Chats.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +20,8 @@ const router = createBrowserRouter(
       <Route index element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/enterUsername" element={<EnterUsername />} />
+      <Route path="/chats" element={<Chats/>} />
     </Route>
   )
 );
