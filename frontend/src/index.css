@@ -1,3 +1,79 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+a.active {
+  @apply border-b-2 text-blue-800;
+}
+
+/* @keyframes bounce {
+    50% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8,0,1,1);
+        opacity: 0;
+    }
+    0%,100% {
+        transform: none;
+        animation-timing-function: cubic-bezier(0,0,0.2,1);
+        opacity: 1;
+    }
+}
+.bouncy{
+    animation: bounce 1s linear  1 forwards ;
+} */
+
+@keyframes lft1 {
+  from {
+    left: -310px;
+  }
+  to {
+    left: -82px;
+  }
+}
+.leftslide1 {
+  animation: lft1 1s linear 1 forwards;
+}
+@keyframes lft2 {
+  from {
+    left: -50px;
+  }
+  to {
+    left: 80px;
+  }
+}
+.leftslide2 {
+  animation: lft2 1s linear 1 forwards;
+}
+@keyframes rgt1 {
+  from {
+    right: -215px;
+  }
+  to {
+    right: -120px;
+  }
+}
+.rightslide1 {
+  animation: rgt1 1s linear 1 forwards;
+}
+@keyframes rgt2 {
+  from {
+    right: -200px;
+  }
+  to {
+    right: -7px;
+  }
+}
+.rightslide2 {
+  animation: rgt2 1s linear 1 forwards;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fading {
+  animation: fade 2s linear 1 forwards;
+}

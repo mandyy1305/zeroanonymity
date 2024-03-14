@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import Faq from "./pages/Faq.jsx"
 import "./index.css";
 import {
   createBrowserRouter,
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
       <Route path="/contact" element={<Contact />} />
       <Route path="/enterUsername" element={<EnterUsername />} />
       <Route path="/chats" element={<Chats/>} />
+      <Route path="faq" element={<Faq/>}/>
     </Route>
   )
 );
