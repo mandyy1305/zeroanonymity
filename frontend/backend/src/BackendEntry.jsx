@@ -1,10 +1,10 @@
 
 import { useState } from "react";
-import {login, spectatorMode, funcs, createChat, sendChat} from "./functions"
+import {login, funcs, createChat, sendChat} from "./functions"
 
 
 
-export default function App(){
+export default function BackendEntry(){
   
 
   
@@ -45,7 +45,7 @@ export default function App(){
       <button onClick={()=>{createChat(user_1, user_2)}}>CreateChat</button>
       
 
-      <br /><br /><br />
+      
       <input type="text" onChange={(e)=>setMsg(e.target.value)}/>
       <button onClick={()=>{sendChat(getChatId(user_1, user_2), msg, user_1)}}>Send Chat</button>
       

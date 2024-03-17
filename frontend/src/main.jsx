@@ -14,6 +14,7 @@ import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import EnterUsername from "./pages/EnterUsername.jsx";
 import Chats from "./pages/Chats.jsx";
+import BackendEntry from "../backend/src/BackendEntry.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="/enterUsername" element={<EnterUsername />} />
       <Route path="/chats" element={<Chats/>} />
       <Route path="faq" element={<Faq/>}/>
+      <Route path="backend" element={<BackendEntry/>}/>
     </Route>
   )
 );
