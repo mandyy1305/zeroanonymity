@@ -3,10 +3,26 @@ import logo from "./img/Z-AnonymityLogo.svg";
 
 import { IoMenu } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      console.log("<OKOKOKOK></OKOKOKOK>");
+      const confirmationMessage = 'Are you sure you want to leave this page?';
+      event.returnValue = confirmationMessage;
+      return confirmationMessage;
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col w-screen h-screen max-w-screen-2xl mx-auto ">

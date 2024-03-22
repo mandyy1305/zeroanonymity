@@ -1,3 +1,4 @@
 usernames can contain only alphanumeric chars.
 set character limit for messages
 display messages when sent with a clock. and then a tick when it is sent to db
+usernames should be only in lowercase

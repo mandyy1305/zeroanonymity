@@ -31,7 +31,7 @@ a.active {
   }
 }
 .leftslide1 {
-  animation: lft1 1s linear 1 forwards;
+  animation: lft1 0.5s ease-in-out 1 forwards;
 }
 @keyframes lft2 {
   from {
@@ -42,7 +42,7 @@ a.active {
   }
 }
 .leftslide2 {
-  animation: lft2 1s linear 1 forwards;
+  animation: lft2 0.5s ease-in-out 1 forwards;
 }
 @keyframes rgt1 {
   from {
@@ -53,7 +53,7 @@ a.active {
   }
 }
 .rightslide1 {
-  animation: rgt1 1s linear 1 forwards;
+  animation: rgt1 0.5s ease-in-out 1 forwards;
 }
 @keyframes rgt2 {
   from {
@@ -64,7 +64,7 @@ a.active {
   }
 }
 .rightslide2 {
-  animation: rgt2 1s linear 1 forwards;
+  animation: rgt2 0.5s ease-in-out 1 forwards;
 }
 @keyframes fade {
   from {
@@ -75,5 +75,5 @@ a.active {
   }
 }
 .fading {
-  animation: fade 2s linear 1 forwards;
+  animation: fade 0.5s linear 1 forwards;
 }
