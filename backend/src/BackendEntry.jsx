@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import {login, funcs, createChat, sendChat, heartBeatId} from "./functions"
+import {login, funcs, createChat, sendChat, heartBeatId, getChats} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 
@@ -59,7 +59,9 @@ export default function BackendEntry(){
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{stopHeartbeat(heartBeatId)}}>Stop HeartBeat</button>
       
-
+      <br /><br />
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChats(user_1, user_2)}}>getchat</button>
+      
     </div>
     
   )

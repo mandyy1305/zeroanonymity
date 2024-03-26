@@ -1,6 +1,7 @@
-import { Firestore, addDoc, arrayUnion, collection, doc, getDoc, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
+import { timeOutValue } from "./GlobalValues";
 
 export let heartBeatId;
 let spectatorMode = true;
@@ -8,11 +9,25 @@ export const funcs = () => {
     return spectatorMode
 }
 
+// ----- HELPER FUNCTIONS -----
 export const locatlDate = (utcTime) => {
     const date = new Date(utcTime)
     const localDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
     return localDate.toISOString();
 }
+
+export const timeDiff = (time) => {
+
+}
+
+const chatIdOrder = async (user_1, user_2) =>{ 
+    if(user_1>user_2){
+        [user_1, user_2] = [user_2, user_1];
+    }
+    return user_1 + '+' + user_2;
+}
+
+//-----------------------------
 
 export const login = async (user_id) => {
     
@@ -51,7 +66,7 @@ export const login = async (user_id) => {
                 const timeDiff = (currentDate-lastLoginDate) / (1000*60);
 
                 //timeout if prev user foes not logout and his browser crashed or sum
-                if(timeDiff > 0.2){
+                if(timeDiff > timeOutValue){
                     //user has full access
                     userFullAccess();
                 }
@@ -83,14 +98,13 @@ export const login = async (user_id) => {
     }    
 }
 
-export const createChat = async (user_1, user_2) => {
-    const chatIdOrder = async () =>{ 
-        if(user_1>user_2){
-            [user_1, user_2] = [user_2, user_1];
-        }
-        return user_1 + '+' + user_2;
-    }
 
+export const checkChatExistence = async (user_2) => {
+    
+}
+
+export const createChat = async (user_1, user_2) => {
+    
     // Adding user_2 to chatList of user_1
     try{
         const collectionRef = collection(db, "users");
@@ -121,7 +135,7 @@ export const createChat = async (user_1, user_2) => {
     //Creating a chat record between the two users.
     try{
         const collectionRef = collection(db, "chats");
-        const docRef = doc(collectionRef, await chatIdOrder() )
+        const docRef = doc(collectionRef, await chatIdOrder(user_1, user_2) )
         const docSnap = await setDoc(docRef, {
             user_1: user_1,
             user_2: user_2,
@@ -134,7 +148,6 @@ export const createChat = async (user_1, user_2) => {
     }    
 }
 
-
 export const sendChat = async (chatId, message, senderId) => {
     try{
         const messageId = new Date().toISOString() + "+" + senderId;
@@ -143,11 +156,31 @@ export const sendChat = async (chatId, message, senderId) => {
 
         const docSnap = await setDoc(docRef, {
             message: message,
-            senderId: senderId
+            senderId: senderId,
+            createdAt: serverTimestamp()
         });
         console.log("Document written with ID: ", docRef.id);
     }
     catch(e){
         console.error("Error adding document: ", e);
     }
+}
+
+export const getChats = async (user_1, user_2) => {
+    //Creating a chat record between the two users.
+    try{
+        const q = query(collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" ), orderBy('createdAt','desc') ,limit(5))
+        //const collectionRef = collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" , orderBy('timestamp', 'desc'), limit(5));
+        //const docRef = doc(collectionRef,  )
+        const docSnap = await getDocs(q);
+        const documents = docSnap.docs.map(doc => doc.data());
+        docSnap.forEach((doc) => {
+            // Access individual document data
+            console.log(doc.id, ' => ', doc.data());
+        });
+    }
+    catch (e) {
+        console.error("Error adding document: ", e);
+        
+    }   
 }
