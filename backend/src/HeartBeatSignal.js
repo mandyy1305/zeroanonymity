@@ -1,5 +1,6 @@
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { heartBeatFrequency } from "./GlobalValues";
 
 
 
@@ -7,7 +8,7 @@ export const startHeartbeat = (user_id) => {
     // Send heartbeat signal every hour
     const intervalId = setInterval(() => {
       sendHeartbeatSignal(user_id);
-    }, 10000); // 1 hour in milliseconds
+    }, heartBeatFrequency); // 1 hour in milliseconds
     
     return intervalId; // Return intervalId for later use
 };
