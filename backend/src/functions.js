@@ -173,7 +173,7 @@ export const getChats = async (user_1, user_2) => {
         //const collectionRef = collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" , orderBy('timestamp', 'desc'), limit(5));
         //const docRef = doc(collectionRef,  )
         const docSnap = await getDocs(q);
-        const documents = docSnap.docs.map(doc => doc.data());
+        return docSnap
         docSnap.forEach((doc) => {
             // Access individual document data
             console.log(doc.id, ' => ', doc.data());
