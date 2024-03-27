@@ -42,11 +42,12 @@ export const login = async (user_id) => {
             // function to give full access to user while log in
             setSpectatorMode(false)
             await updateDoc(docRef, {
+                isActive: true,
                 lastActive: new Date().toISOString()
             })
 
             //start heartbeat signals upon successful login
-            heartBeatId = startHeartbeat(user_id);
+            //heartBeatId = startHeartbeat(user_id);
 
             console.log("FullAccess" + spectatorMode);
         }
@@ -68,7 +69,7 @@ export const login = async (user_id) => {
                 //timeout if prev user foes not logout and his browser crashed or sum
                 if(timeDiff > timeOutValue){
                     //user has full access
-                    userFullAccess();
+                    await userFullAccess();
                 }
                 else{
                     //user can only spectate
@@ -77,7 +78,7 @@ export const login = async (user_id) => {
             }
             else{
                 //user has full access
-                userFullAccess();
+                await userFullAccess();
             }
         }
         else{

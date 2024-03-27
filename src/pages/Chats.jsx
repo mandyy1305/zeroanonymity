@@ -10,7 +10,7 @@ import { serverTimestamp } from "firebase/firestore";
 
 
 const Chats = () => {
-    // const chatEndRef = useRef(null);
+    const chatEndRef = useRef(null);
     
 
   // let msgs = JSON.parse(MessageRef)
@@ -40,9 +40,9 @@ const Chats = () => {
     }
     fetchData()
     console.log(chats);
-    // if(chatEndRef.current){
-    //   chatEndRef.current.scrollIntoView({ behavior: 'smooth' , block:'start'});
-    // }
+    if(chatEndRef.current){
+      chatEndRef.current.scrollIntoView();
+    }
   }, [])
   
 
@@ -79,7 +79,7 @@ const Chats = () => {
   // };
   const sendMsg = (msgSnapshot) => {
     const msgText = document.getElementById("messageInput").value;
-    
+    document.getElementById("messageInput").setAttribute("");
     const newID = new Date().toISOString() + user_1
     const createdAt = serverTimestamp()
     
@@ -111,15 +111,16 @@ const Chats = () => {
           <span className="ml-4 text-lg font-semibold text-white">Someone</span>
         </div>
         <div className="bg-sky-100 flex h-[105%] flex-col ">
-          <div className="m-3 rounded-xl md:h-[75%]  bg-white border-[1px] border-black p-2 flex flex-col overflow-y-auto chat-area no-scrollbar">
+          <div className="m-3 rounded-xl md:h-[75%]  border-[1px] border-black p-2 flex flex-col overflow-y-auto chat-area no-scrollbar">
             {/* Message */}
            
             {chats && Object.entries(chats).reverse().map(([id, data]) => (
               data.senderId === user_1 ? 
                 (<SentMsg key={id} msg={data.message}/>) :
                 (<RecievedMsg key={id} msg={data.message}/>)
+                
               ))}
-            
+            {/* <div ref={chatEndRef}></div> */}
           
           </div>
           <div className="bg-[#00000000] h-1/6 pl-3 flex ">
