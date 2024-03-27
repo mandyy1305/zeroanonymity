@@ -1,10 +1,10 @@
 import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
-import { timeOutValue } from "./GlobalValues";
+import { setSpectatorMode, spectatorMode, timeOutValue } from "./GlobalValues";
 
 export let heartBeatId;
-let spectatorMode = true;
+
 export const funcs = () => {
     return spectatorMode
 }
@@ -40,7 +40,7 @@ export const login = async (user_id) => {
 
         const userFullAccess = async () => {
             // function to give full access to user while log in
-            spectatorMode = false;
+            setSpectatorMode(false)
             await updateDoc(docRef, {
                 lastActive: new Date().toISOString()
             })
@@ -52,7 +52,7 @@ export const login = async (user_id) => {
         }
         const userPartialAccess = async () => {
             // function to give partial access to user while log in
-            spectatorMode = true;
+            setSpectatorMode(true)
             console.log("PartialAccess" + spectatorMode);
         }
 
