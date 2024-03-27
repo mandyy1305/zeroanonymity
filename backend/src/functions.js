@@ -148,6 +148,7 @@ export const createChat = async (user_1, user_2) => {
     }    
 }
 
+//comment added
 export const sendChat = async (user_1, user_2, message, messageId, createdAt ) => {
     try{
         // senderId == user_1
