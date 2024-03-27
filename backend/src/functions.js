@@ -148,16 +148,18 @@ export const createChat = async (user_1, user_2) => {
     }    
 }
 
-export const sendChat = async (chatId, message, senderId) => {
+export const sendChat = async (user_1, user_2, message, messageId, createdAt ) => {
     try{
-        const messageId = new Date().toISOString() + "+" + senderId;
+        // senderId == user_1
+        const chatId = await chatIdOrder(user_1, user_2)
+        //const messageId = new Date().toISOString() + "+" + user_1;
         const collectionRef = collection(db, 'chats', chatId, 'messages');
         const docRef = doc(collectionRef, messageId);
 
         const docSnap = await setDoc(docRef, {
             message: message,
-            senderId: senderId,
-            createdAt: serverTimestamp()
+            senderId: user_1,
+            createdAt: createdAt
         });
         console.log("Document written with ID: ", docRef.id);
     }
@@ -169,7 +171,7 @@ export const sendChat = async (chatId, message, senderId) => {
 export const getChats = async (user_1, user_2) => {
     //Creating a chat record between the two users.
     try{
-        const q = query(collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" ), orderBy('createdAt','desc') ,limit(5))
+        const q = query(collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" ), orderBy('createdAt','desc') ,limit(50))
         //const collectionRef = collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" , orderBy('timestamp', 'desc'), limit(5));
         //const docRef = doc(collectionRef,  )
         const docSnap = await getDocs(q);
