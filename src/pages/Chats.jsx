@@ -7,11 +7,13 @@ import MessageRef from "./messages.json";
 import { string } from "prop-types";
 import { getChats, sendChat } from "../../backend/src/functions";
 import { serverTimestamp } from "firebase/firestore";
+import { user_1, user_2 } from "../../backend/src/GlobalValues";
 
 
 const Chats = () => {
     const chatEndRef = useRef(null);
-    
+    console.log(user_2)
+    console.log(user_1)
 
   // let msgs = JSON.parse(MessageRef)
   // msgs.forEach(msg => {
@@ -19,13 +21,14 @@ const Chats = () => {
   // });
   const[chats,setChats]=useState(null);
   const[chatList,setChatList]=useState(null);
-  var user_1="divyansh";
-  var user_2="esha";
+  // var user_1="divyansh";
+  // var user_2="priyanka";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Call the getChats function and pass the necessary parameters
+        if(user_1!="" && user_2!=""){
         const docSnap = await getChats(user_1, user_2); // Provide appropriate user_1 and user_2 values
         // Extract the JSON object from docSnap and set it to state
         const formattedData = docSnap.docs.reduce((acc, doc) => {
@@ -34,13 +37,13 @@ const Chats = () => {
         }, {});
         
         // Set the transformed data to state
-        setChats(formattedData);
+        setChats(formattedData);}
       } catch (error) {
         console.error('Error fetching chat data:', error);
       }
     }
     fetchData()
-    console.log(chats);
+    
     if(chatEndRef.current){
       chatEndRef.current.scrollIntoView();
     }

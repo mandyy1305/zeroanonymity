@@ -10,3 +10,9 @@ export var user_1 = ""
 export function setUser_1(str){
     user_1 = str
 }
+
+export var user_2 = ""
+export function setUser_2(str){
+    user_2=str;
+    console.log(user_2)
+}

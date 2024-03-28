@@ -2,9 +2,15 @@ import { useState } from "react";
 import UsernameInUse from "../components/UsernameInUse";
 import { login } from "../../backend/src/functions";
 import {  spectatorMode } from "../../backend/src/GlobalValues";
+import { useNavigate } from "react-router-dom";
 // var isIdActive = require("./GlobalValues");
 
 const EnterUsername = () => {
+ 
+    const navigateTo = useNavigate();
+    function ToChatPage() {
+      navigateTo("/Chats");
+    }
     const [usernameActiveStatus,setUsernameActiveStatus] = useState(false);
     const[userId,setUserId]=useState("");
     //for bakchodi
@@ -13,7 +19,10 @@ const EnterUsername = () => {
           setUsernameActiveStatus(true);
         }else{
           setUsernameActiveStatus(false);
-          window.location.href='/chats';
+          ToChatPage();
+
+          // window.location.href='/chats';
+          // event.preventDefault();
         }
       }
       // const successLogin=()=>{

@@ -1,6 +1,6 @@
 const UsernameInUse = () => {
     return (
-        <div className=" text-center flex flex-col">
+        <div className="text-center flex flex-col">
                     <span className=" font-bold text-lg mt-8">Oops, this username is already being used.</span>
                     <span className=" mt-4 font-semibold text-lg">Wait until it is available <br/> or <br/> Spectate the user</span>
                    <div className=" w-11/12 mx-auto  md:w-full  flex flex-col justify-evenly mt-8 p-4 border-2 border-black rounded-lg">

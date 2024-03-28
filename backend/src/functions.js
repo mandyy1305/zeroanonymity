@@ -1,7 +1,7 @@
 import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
-import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue } from "./GlobalValues";
+import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue, user_1 } from "./GlobalValues";
 
 export let heartBeatId;
 
@@ -42,6 +42,7 @@ export const login = async (user_id) => {
             // function to give full access to user while log in
             setSpectatorMode(false)
             setUser_1(user_id)
+            console.log(user_1)
             await updateDoc(docRef, {
                 isActive: true,
                 lastActive: new Date().toISOString()
