@@ -1,8 +1,9 @@
 
 import { useEffect, useState } from "react";
-import {login, funcs, createChat, sendChat, heartBeatId, getChats} from "./functions"
+import {login, funcs, createChat, sendChat, heartBeatId, getChats, getChatList, getLatestMessage, sortChatList} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
+import { serverTimestamp } from "firebase/firestore";
 
 
 export default function BackendEntry(){
@@ -51,7 +52,7 @@ export default function BackendEntry(){
       <button className="border-[2px] border-black" onClick={()=>{createChat(user_1, user_2)}}>CreateChat</button>
       
       <input type="text" onChange={(e)=>setMsg(e.target.value)}/>
-      <button className="bg-red-900s" onClick={()=>{sendChat(getChatId(user_1, user_2), msg, user_1)}}>Send Chat</button>
+      <button className="bg-red-900s" onClick={()=>{sendChat(user_1, user_2, msg, new Date().toISOString() + '+' +user_1, serverTimestamp())}}>Send Chat</button>
       <br /><br />
       <button onClick={() => {setIsSpectatorMode(!isSpectatorMode)}}>Click me</button>
       <p>Hello, {isSpectatorMode ? "Not yet logged in" : "Logged in"}</p>
@@ -61,6 +62,16 @@ export default function BackendEntry(){
       
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChats(user_1, user_2)}}>getchat</button>
+      
+
+      <br /><br />
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChatList(user_1)}}>Get List</button>
+      
+      <br /><br />
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getLatestMessage(user_1, user_2)}}>Get Latest Time</button>
+      
+      <br /><br />
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{sortChatList(user_1)}}>Get Sorted List Time</button>
       
     </div>
     

@@ -42,7 +42,6 @@ export const login = async (user_id) => {
             // function to give full access to user while log in
             setSpectatorMode(false)
             setUser_1(user_id)
-            console.log(user_1)
             await updateDoc(docRef, {
                 isActive: true,
                 lastActive: new Date().toISOString()
@@ -91,7 +90,7 @@ export const login = async (user_id) => {
                 lastActive: new Date().toISOString(),
                 chatList: []
             });
-            spectatorMode = false;
+            setSpectatorMode(false)
             console.log("Document written with ID: ", docRef.id);
         }
         
@@ -113,6 +112,17 @@ export const createChat = async (user_1, user_2) => {
         const collectionRef = collection(db, "users");
         const docRef = doc(collectionRef, user_1);
         const docSnap = await getDoc(docRef);
+
+        if(!docSnap.exists()){
+            //CREATE USER
+            //create a doc in firestore if user does not already exist
+            await setDoc(docRef, {
+                isActive: true,
+                lastActive: new Date().toISOString(),
+                chatList: []
+            });
+            console.log("Document written with ID: ", docRef.id);
+        }
         await updateDoc(docRef, {
             chatList: arrayUnion(user_2)
         })
@@ -126,6 +136,16 @@ export const createChat = async (user_1, user_2) => {
         const collectionRef = collection(db, "users");
         const docRef = doc(collectionRef, user_2);
         const docSnap = await getDoc(docRef);
+        if(!docSnap.exists()){
+            //CREATE USER
+            //create a doc in firestore if user does not already exist
+            await setDoc(docRef, {
+                isActive: true,
+                lastActive: new Date().toISOString(),
+                chatList: []
+            });
+            console.log("Document written with ID: ", docRef.id);
+        }
         await updateDoc(docRef, {
             chatList: arrayUnion(user_1)
         })
@@ -189,4 +209,59 @@ export const getChats = async (user_1, user_2) => {
         console.error("Error adding document: ", e);
         
     }   
+}
+
+export const getChatList = async (user_1) => {
+    try{
+        const collectionRef = collection(db, "users");
+        const docRef = doc(collectionRef,  user_1)
+        const docSnap = await getDoc(docRef);
+        const val = docSnap.data().chatList
+        console.log(val)
+        return val
+    }
+    catch (e) {
+        console.error("Error adding document: ", e);
+        
+    }   
+}
+
+export const getLatestMessage = async (user_1, user_2) => {
+    const q = query(collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" ), orderBy('createdAt','desc') ,limit(1))
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+        // Retrieve the last document from the query snapshot
+        const lastDocument = querySnapshot.docs[0];
+        const val = lastDocument.data().createdAt
+        console.log("Last message: " + {val});
+        return {[val]:user_2}
+        
+      }  
+
+}
+
+export const sortChatList = async (user_1)=>{
+    const chatList = await getChatList(user_1);
+    var timestampList = []
+    for (const user_2 of chatList) {
+        const val = await getLatestMessage(user_1, user_2);
+        timestampList.push(val)
+    }
+
+    //sort the timestamp list
+    timestampList.sort((a, b) => {
+        const timestampA = Object.keys(a)[0]; // Extract timestamp from object a
+        const timestampB = Object.keys(b)[0]; // Extract timestamp from object b
+    
+        // Compare timestamps
+        if (timestampA >= timestampB) {
+            return -1; // If timestampA is greater, return -1 (indicating it should come before)
+        } else {
+            return 1; // If timestampB is greater, return 1 (indicating it should come before)
+        }
+    })
+
+    console.log(timestampList);
+    return timestampList
+
 }

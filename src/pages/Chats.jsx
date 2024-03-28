@@ -52,7 +52,7 @@ const Chats = () => {
   const sendMsg = (msgSnapshot) => {
     const msgText = document.getElementById("messageInput").value;
     document.getElementById("messageInput").setAttribute("");
-    const newID = new Date().toISOString() + user_1
+    const newID = new Date().toISOString() + '+' +user_1
     const createdAt = serverTimestamp()
     
     const newEntry = {
