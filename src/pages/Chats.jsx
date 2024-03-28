@@ -18,6 +18,7 @@ const Chats = () => {
   //   console.log(msg);
   // });
   const[chats,setChats]=useState(null);
+  const[chatList,setChatList]=useState(null);
   var user_1="divyansh";
   var user_2="esha";
 
@@ -45,38 +46,6 @@ const Chats = () => {
     }
   }, [])
   
-
-  
-// const readMsg=()=>{
-    // Object.values(MessageRef).forEach(val => {
-    //   console.log(val.senderId);
-    //   if(val.senderId == "divyansh_07"){
-    //     chats.push(
-    //     <SentMsg msg={val.message}/>);
-    //   }
-    //   else{
-    //     chats.push(
-    //     <RecievedMsg msg={val.message}/>);
-    //   }
-    // });
-  // }
-
-  //readMsg();
-                                             
-  // const sendMsg = (msgSnapshot) => {
-  //   const msgText = document.getElementById("messageInput").value;
-  //   const newEntry = ["2024-04-26T16:50:10.326Z+divyansh", {
-  //     "senderId": user_1,
-  //     "message": msgText,
-  //     "createdAt": {"seconds": 1711471550, "nanoseconds": 575000040}
-  //   }];
-  
-  //   // Convert JSON object to array
-  //   const prevChatsArray = chats ? Object.entries(chats) : [];
-  
-  //   // Update state
-  //   setChats([...prevChatsArray, newEntry]);
-  // };
   const sendMsg = (msgSnapshot) => {
     const msgText = document.getElementById("messageInput").value;
     document.getElementById("messageInput").setAttribute("");
@@ -100,7 +69,7 @@ const Chats = () => {
   return (
 
     <div className="h-[calc(100%-96px)] flex bg-amber-500">
-      <UserList/>
+      <UserList />
       <div className="bg-sky-00 w-1 invisible lg:visible lg:w-3/4">
         <div className="bg-[#299595] h-[45px] flex items-center pl-4 border-t-[2px] border-b-[2px] border-black">
           <img
@@ -113,13 +82,14 @@ const Chats = () => {
         <div className="bg-sky-100 flex h-[105%] flex-col ">
           <div className="m-3 rounded-xl md:h-[75%]  border-[1px] border-black p-2 flex flex-col overflow-y-auto chat-area no-scrollbar">
             {/* Message */}
-           
+
             {chats && Object.entries(chats).reverse().map(([id, data]) => (
               data.senderId === user_1 ? 
                 (<SentMsg key={id} msg={data.message}/>) :
                 (<RecievedMsg key={id} msg={data.message}/>)
                 
               ))}
+              
             {/* <div ref={chatEndRef}></div> */}
           
           </div>

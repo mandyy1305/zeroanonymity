@@ -13,12 +13,12 @@ const Home = () => {
 
       <span className="h-96 w-[350px] lg:w-[1000px] bg-trailExtended2 bg-contain bg-no-repeat bg-center absolute top-[206px] lg:top-[210px]" />
 
-      <Link to="/enterUsername"><div className="absolute top-[470px] lg:top-[550px] border-2 bg-white border-black rounded-2xl px-8 py-3 lg:px-12 lg:py-4 cursor-pointer hover:translate-y-1 z-10">
-        Start texting
-      </div>
-      <div className="absolute top-[480px] lg:top-[560px] border-2 border-black bg-black rounded-2xl px-8 py-3 lg:px-12 lg:py-4 cursor-pointer z-0">
+      <Link to="/enterUsername" className="absolute top-[470px] lg:top-[550px] border-2 bg-white border-black rounded-2xl px-8 py-3 lg:px-12 lg:py-4 cursor-pointer hover:translate-y-1 z-10"><div >
         Start texting
       </div></Link>
+      <div className="absolute top-[480px] lg:top-[560px] border-2 border-black bg-black rounded-2xl px-8 py-3 lg:px-12 lg:py-4 cursor-pointer z-0">
+        Start texting
+      </div>
       <div className="absolute text-center top-[390px] text-[15px] lg:top-96 lg:text-4xl font-semibold">
         Connecting strangers around the world in a single click
       </div>
