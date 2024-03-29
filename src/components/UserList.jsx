@@ -1,6 +1,6 @@
 import React from "react";
 import UserlistItem from "./UserlistItem";
-const UserList = ({chatCardList}) => {
+const UserList = ({chatCardList, fetchDataFunc}) => {
 
   return (
     // <div className="bg-sky-100 border-[2px] border-black w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col 
@@ -18,7 +18,7 @@ const UserList = ({chatCardList}) => {
           const username = item[timestamp];
 
           // Render   UserlistItem with username
-          return <UserlistItem key={index} username={username} />;
+          return <UserlistItem key={index} username={username} fetchDataFunc = {fetchDataFunc}/>;
         })
       }
     </div>
