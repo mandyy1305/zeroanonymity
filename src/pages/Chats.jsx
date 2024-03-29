@@ -5,7 +5,7 @@ import UserlistItem from "../components/UserlistItem";
 import UserList from "../components/UserList";
 import MessageRef from "./messages.json";
 import { string } from "prop-types";
-import { getChats, sendChat } from "../../backend/src/functions";
+import { getChats, getSortedChatList, sendChat } from "../../backend/src/functions";
 import { serverTimestamp } from "firebase/firestore";
 import { user_1, user_2 } from "../../backend/src/GlobalValues";
 
@@ -42,8 +42,12 @@ const Chats = () => {
         console.error('Error fetching chat data:', error);
       }
     }
+
+    const fetchChatList = async() => {
+      setChatList(await getSortedChatList(user_1));
+    }
     fetchData()
-    
+    fetchChatList()
     if(chatEndRef.current){
       chatEndRef.current.scrollIntoView();
     }
@@ -54,7 +58,6 @@ const Chats = () => {
     document.getElementById("messageInput").setAttribute("");
     const newID = new Date().toISOString() + '+' +user_1
     const createdAt = serverTimestamp()
-    
     const newEntry = {
       [newID]: { // Use a unique key for the new entry
         "senderId": user_1,
@@ -72,7 +75,7 @@ const Chats = () => {
   return (
 
     <div className="h-[calc(100%-96px)] flex bg-amber-500">
-      <UserList />
+      {chatList !== null &&<UserList chatCardList = {chatList}/>}
       <div className="bg-sky-00 w-1 invisible lg:visible lg:w-3/4">
         <div className="bg-[#299595] h-[45px] flex items-center pl-4 border-t-[2px] border-b-[2px] border-black">
           <img
@@ -86,12 +89,12 @@ const Chats = () => {
           <div className="m-3 rounded-xl md:h-[75%]  border-[1px] border-black p-2 flex flex-col overflow-y-auto chat-area no-scrollbar">
             {/* Message */}
 
-            {chats && Object.entries(chats).reverse().map(([id, data]) => (
+            {/* {chats && Object.entries(chats).reverse().map(([id, data]) => (
               data.senderId === user_1 ? 
                 (<SentMsg key={id} msg={data.message}/>) :
                 (<RecievedMsg key={id} msg={data.message}/>)
                 
-              ))}
+              ))} */}
               
             {/* <div ref={chatEndRef}></div> */}
           
@@ -113,3 +116,7 @@ const Chats = () => {
 };
 
 export default Chats;
+
+
+
+

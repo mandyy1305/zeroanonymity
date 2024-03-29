@@ -9,7 +9,7 @@ export const funcs = () => {
     return spectatorMode
 }
 
-// ----- HELPER FUNCTIONS -----
+//#region ----- HELPER FUNCTIONS -----
 export const locatlDate = (utcTime) => {
     const date = new Date(utcTime)
     const localDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
@@ -27,7 +27,7 @@ const chatIdOrder = async (user_1, user_2) =>{
     return user_1 + '+' + user_2;
 }
 
-//-----------------------------
+//#endregion
 
 export const login = async (user_id) => {
     
@@ -100,6 +100,21 @@ export const login = async (user_id) => {
     }    
 }
 
+export const logout = async (user_id) => {
+    try{
+        const collectionRef = collection(db, "users");
+        const docRef = doc(collectionRef,  user_id)
+        const docSnap = await updateDoc(docRef, {
+            isActive: false
+        })
+
+        setUser_1("")
+    }
+    catch (e) {
+        console.error("Error adding document: ", e);
+        
+    }  
+}
 
 export const checkChatExistence = async (user_2) => {
     
@@ -192,6 +207,7 @@ export const sendChat = async (user_1, user_2, message, messageId, createdAt ) =
     }
 }
 
+//retrieve all chats between two users from firestore
 export const getChats = async (user_1, user_2) => {
     //Creating a chat record between the two users.
     try{
@@ -211,6 +227,8 @@ export const getChats = async (user_1, user_2) => {
     }   
 }
 
+
+//#region SORTING THE CHATLIST
 export const getChatList = async (user_1) => {
     try{
         const collectionRef = collection(db, "users");
@@ -240,7 +258,7 @@ export const getLatestMessage = async (user_1, user_2) => {
 
 }
 
-export const sortChatList = async (user_1)=>{
+export const getSortedChatList = async (user_1)=>{
     const chatList = await getChatList(user_1);
     var timestampList = []
     for (const user_2 of chatList) {
@@ -265,3 +283,7 @@ export const sortChatList = async (user_1)=>{
     return timestampList
 
 }
+//#endregion
+
+
+

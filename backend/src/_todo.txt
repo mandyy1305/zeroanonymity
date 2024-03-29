@@ -8,3 +8,5 @@ uncomment heartbeatstart signal
 
 prevent back from chatPage to EnterUsername Page
 change panel of UsernameInUse from yes/no to only button of enter spectator mode and choose another username.
+
+logout button to be added

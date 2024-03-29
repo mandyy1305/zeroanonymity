@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import {login, funcs, createChat, sendChat, heartBeatId, getChats, getChatList, getLatestMessage, sortChatList} from "./functions"
+import {login, funcs, createChat, sendChat, heartBeatId, getChats, getChatList, getLatestMessage, getSortedChatList, logout} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 import { serverTimestamp } from "firebase/firestore";
@@ -62,16 +62,12 @@ export default function BackendEntry(){
       
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChats(user_1, user_2)}}>getchat</button>
-      
 
       <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChatList(user_1)}}>Get List</button>
-      
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{logout(user_1)}}>Logout</button>
+
       <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getLatestMessage(user_1, user_2)}}>Get Latest Time</button>
-      
-      <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{sortChatList(user_1)}}>Get Sorted List Time</button>
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getSortedChatList(user_1)}}>Get Sorted List Time</button>
       
     </div>
     
