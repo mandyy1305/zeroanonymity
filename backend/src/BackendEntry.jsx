@@ -1,9 +1,10 @@
 
 import { useEffect, useState } from "react";
-import {login, funcs, createChat, sendChat, heartBeatId, getChats, getChatList, getLatestMessage, getSortedChatList, logout} from "./functions"
+import {login, createChat, sendChat, heartBeatId, getChats, getSortedChatList, logout} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 import { serverTimestamp } from "firebase/firestore";
+import { spectatorMode } from "./GlobalValues";
 
 
 export default function BackendEntry(){
@@ -21,12 +22,12 @@ export default function BackendEntry(){
   const [user_2, setUser_2] = useState('');
   const [chatMsg, setChatMsg] = useState('');
 
-  const [isSpectatorMode, setIsSpectatorMode] = useState(funcs());
+  const [isSpectatorMode, setIsSpectatorMode] = useState(spectatorMode);
 
   function handleClick() {
     login(UID)
       .then( () => {
-        setIsSpectatorMode(funcs());
+        setIsSpectatorMode(spectatorMode);
         //start heartbeat
 
       })
@@ -61,7 +62,7 @@ export default function BackendEntry(){
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{stopHeartbeat(heartBeatId)}}>Stop HeartBeat</button>
       
       <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChats(user_1, user_2)}}>getchat</button>
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{testGetSort(user_1)}}>getchat list</button>
 
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{logout(user_1)}}>Logout</button>

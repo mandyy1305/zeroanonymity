@@ -96,7 +96,7 @@ const Chats = () => {
                 (<SentMsg key={id} msg={data.message}/>) :
                 (<RecievedMsg key={id} msg={data.message}/>)
                 
-              ))}
+            ))}
               
             {/* <div ref={chatEndRef}></div> */}
           

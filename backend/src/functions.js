@@ -1,13 +1,9 @@
 import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
-import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue, user_1 } from "./GlobalValues";
+import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue, user_1, user_2 } from "./GlobalValues";
 
 export let heartBeatId;
-
-export const funcs = () => {
-    return spectatorMode
-}
 
 //#region ----- HELPER FUNCTIONS -----
 export const locatlDate = (utcTime) => {
@@ -29,6 +25,7 @@ const chatIdOrder = async (user_1, user_2) =>{
 
 //#endregion
 
+//#region LOGIN-LOGOUT
 export const login = async (user_id) => {
     
     try {
@@ -115,14 +112,13 @@ export const logout = async (user_id) => {
         
     }  
 }
+//#endregion
 
-export const checkChatExistence = async (user_2) => {
-    
+//#region CREATE CHAT
+export const checkChatExistence = async (user_2) => {    
 }
 
-export const createChat = async (user_1, user_2) => {
-    
-    // Adding user_2 to chatList of user_1
+const addUserToChatList = async (user_1, user_2) => {
     try{
         const collectionRef = collection(db, "users");
         const docRef = doc(collectionRef, user_1);
@@ -134,41 +130,27 @@ export const createChat = async (user_1, user_2) => {
             await setDoc(docRef, {
                 isActive: true,
                 lastActive: new Date().toISOString(),
-                chatList: []
+                chatList: {}
             });
             console.log("Document written with ID: ", docRef.id);
         }
-        await updateDoc(docRef, {
-            chatList: arrayUnion(user_2)
-        })
+        await setDoc(docRef, {
+            chatList:{
+                [user_2] : serverTimestamp()
+            }
+        }, { merge: true })
     }
     catch (e) {
         console.error("Error adding document: ", e);
     }
+}
+export const createChat = async (user_1, user_2) => {
+    
+    // Adding user_2 to chatList of user_1
+    addUserToChatList(user_1, user_2)
 
     // Adding user_1 to chatList of user_2
-    try{
-        const collectionRef = collection(db, "users");
-        const docRef = doc(collectionRef, user_2);
-        const docSnap = await getDoc(docRef);
-        if(!docSnap.exists()){
-            //CREATE USER
-            //create a doc in firestore if user does not already exist
-            await setDoc(docRef, {
-                isActive: true,
-                lastActive: new Date().toISOString(),
-                chatList: []
-            });
-            console.log("Document written with ID: ", docRef.id);
-        }
-        await updateDoc(docRef, {
-            chatList: arrayUnion(user_1)
-        })
-    }
-    catch (e) {
-        console.error("Error adding document: ", e);
-    }
-
+    addUserToChatList(user_2, user_1)
 
     //Creating a chat record between the two users.
     try{
@@ -185,9 +167,10 @@ export const createChat = async (user_1, user_2) => {
         console.error("Error adding document: ", e);
     }    
 }
+//#endregion
 
-//comment added
-export const sendChat = async (user_1, user_2, message, messageId, createdAt ) => {
+//#region SEND CHAT
+const setChatDocument = async (user_1, user_2, message, messageId, createdAt ) =>{
     try{
         // senderId == user_1
         const chatId = await chatIdOrder(user_1, user_2)
@@ -206,8 +189,29 @@ export const sendChat = async (user_1, user_2, message, messageId, createdAt ) =
         console.error("Error adding document: ", e);
     }
 }
+const setCreatedAt = async (user_1, user_2, createdAt) =>{
+    console.log(user_2)
+    try{
+        const collectionRef = collection(db, 'users');
+        const docRef = doc(collectionRef, user_1);
+        const docSnap = await setDoc(docRef, {
+            chatList: {[user_2]: createdAt}
+        }, { merge: true });
+        console.log("Latest message updated with ID: ", docRef.id);
+    }
+    catch(e){
+        console.error("Error adding document: ", e);
+    }
+}
 
-//retrieve all chats between two users from firestore
+export const sendChat = async (user_1, user_2, message, messageId, createdAt ) => {
+    setChatDocument(user_1, user_2, message, messageId, createdAt );
+    setCreatedAt(user_1, user_2, createdAt);
+    setCreatedAt(user_2, user_1, createdAt);
+}
+//#endregion
+
+//#region RETRIEVING CHATS BETWEEN TWO USERS FROM DB
 export const getChats = async (user_1, user_2) => {
     //Creating a chat record between the two users.
     try{
@@ -226,61 +230,30 @@ export const getChats = async (user_1, user_2) => {
         
     }   
 }
+//#endregion
 
+//#region RETRIEVING SORTED CHATLIST
 
-//#region SORTING THE CHATLIST
-export const getChatList = async (user_1) => {
+export const getSortedChatList = async (user_1)=>{
     try{
         const collectionRef = collection(db, "users");
         const docRef = doc(collectionRef,  user_1)
         const docSnap = await getDoc(docRef);
         const val = docSnap.data().chatList
-        console.log(val)
-        return val
+        const dataArray = Object.entries(val);
+        // Sort the array based on timestamps
+        dataArray.sort((a, b) => {
+        return b[1].seconds - a[1].seconds;
+        });
+        // Extract names from sorted array
+        const sortedNames = dataArray.map(([name, _]) => name);
+        console.log(sortedNames);
+        return sortedNames
     }
     catch (e) {
         console.error("Error adding document: ", e);
         
-    }   
-}
-
-export const getLatestMessage = async (user_1, user_2) => {
-    const q = query(collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" ), orderBy('createdAt','desc') ,limit(1))
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-        // Retrieve the last document from the query snapshot
-        const lastDocument = querySnapshot.docs[0];
-        const val = lastDocument.data().createdAt
-        console.log("Last message: " + {val});
-        return {[val]:user_2}
-        
-      }  
-
-}
-
-export const getSortedChatList = async (user_1)=>{
-    const chatList = await getChatList(user_1);
-    var timestampList = []
-    for (const user_2 of chatList) {
-        const val = await getLatestMessage(user_1, user_2);
-        timestampList.push(val)
-    }
-
-    //sort the timestamp list
-    timestampList.sort((a, b) => {
-        const timestampA = Object.keys(a)[0]; // Extract timestamp from object a
-        const timestampB = Object.keys(b)[0]; // Extract timestamp from object b
-    
-        // Compare timestamps
-        if (timestampA >= timestampB) {
-            return -1; // If timestampA is greater, return -1 (indicating it should come before)
-        } else {
-            return 1; // If timestampB is greater, return 1 (indicating it should come before)
-        }
-    })
-
-    console.log(timestampList);
-    return timestampList
+    }  
 
 }
 //#endregion
