@@ -14,5 +14,4 @@ export function setUser_1(str){
 export var user_2 = ""
 export async function setUser_2(str){
     user_2=str;
-    console.log(user_2)
 }

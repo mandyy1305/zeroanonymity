@@ -1,4 +1,4 @@
-import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
 import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue, user_1, user_2 } from "./GlobalValues";
@@ -10,10 +10,6 @@ export const locatlDate = (utcTime) => {
     const date = new Date(utcTime)
     const localDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
     return localDate.toISOString();
-}
-
-export const timeDiff = (time) => {
-
 }
 
 const chatIdOrder = async (user_1, user_2) =>{ 
@@ -115,7 +111,8 @@ export const logout = async (user_id) => {
 //#endregion
 
 //#region CREATE CHAT
-export const checkChatExistence = async (user_2) => {    
+export const checkChatExistence = async (user_2) => {
+    //KUCH TOH LIKHNA BAAKI HAI    
 }
 
 const addUserToChatList = async (user_1, user_2) => {
@@ -211,52 +208,60 @@ export const sendChat = async (user_1, user_2, message, messageId, createdAt ) =
 }
 //#endregion
 
-//#region RETRIEVING CHATS BETWEEN TWO USERS FROM DB
-export const getChats = async (user_1, user_2) => {
-    //Creating a chat record between the two users.
-    try{
-        const q = query(collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" ), orderBy('createdAt','desc') ,limit(50))
-        //const collectionRef = collection(db, "chats", await chatIdOrder(user_1, user_2), "messages" , orderBy('timestamp', 'desc'), limit(5));
-        //const docRef = doc(collectionRef,  )
-        const docSnap = await getDocs(q);
-        return docSnap
-        docSnap.forEach((doc) => {
-            // Access individual document data
-            console.log(doc.id, ' => ', doc.data());
-        });
-    }
-    catch (e) {
-        console.error("Error adding document: ", e);
-        
-    }   
-}
+//#region RETRIEVING CHATS & CHATLISTS BETWEEN FROM DB
+export const getChatListListener = (user_1, callback) => {
+    const docRef = doc(db, 'users', user_1); // Replace 'your_collection_name' with the name of your collection
+    const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
+        if(docSnapshot.exists()){
+            const dataArray = Object.entries(docSnapshot.data().chatList);
+            // Sort the array based on timestamps
+            dataArray.sort((a, b) => {
+                const aSeconds = a[1]; // Use 0 if a[1].seconds is null or undefined
+                const bSeconds = b[1]; // Use 0 if b[1].seconds is null or undefined
+                if (aSeconds === null && bSeconds === null) {
+                    return 0;
+                } else if (aSeconds === null) {
+                    return -1;
+                } else if (bSeconds === null) {
+                    return 1;
+                } else {
+                    return bSeconds - aSeconds;
+                }
+            });
+            // Extract names from sorted array
+            const sortedNames = dataArray.map(([name, _]) => name);
+            callback(sortedNames); // Callback function to handle the snapshot data in the component
+        }
+    });
+  
+    // Return the unsubscribe function to allow cleanup when component unmounts
+    return unsubscribe;
+  };
+
+export const getChatsListener = async (user_1, user_2, callback) => {
+
+    // Wait for chatIdOrder() to complete
+    const chatId = await chatIdOrder(user_1, user_2);
+
+    const q = query(collection(db, "chats", chatId, "messages"), orderBy('createdAt', 'desc'), limit(50));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+        if(user_1!="" && user_2!=""){  
+            const formattedData = snapshot.docs.reduce((acc, doc) => {
+                acc[doc.id] = doc.data();
+                return acc;
+            }, {});    
+            // Set the transformed data to state
+            callback(formattedData)   
+        }
+        // Handle snapshot data
+    });
+    // Return the unsubscribe function directly
+    return unsubscribe;
+};
+
 //#endregion
 
-//#region RETRIEVING SORTED CHATLIST
-
-export const getSortedChatList = async (user_1)=>{
-    try{
-        const collectionRef = collection(db, "users");
-        const docRef = doc(collectionRef,  user_1)
-        const docSnap = await getDoc(docRef);
-        const val = docSnap.data().chatList
-        const dataArray = Object.entries(val);
-        // Sort the array based on timestamps
-        dataArray.sort((a, b) => {
-        return b[1].seconds - a[1].seconds;
-        });
-        // Extract names from sorted array
-        const sortedNames = dataArray.map(([name, _]) => name);
-        console.log(sortedNames);
-        return sortedNames
-    }
-    catch (e) {
-        console.error("Error adding document: ", e);
-        
-    }  
-
-}
-//#endregion
 
 
 

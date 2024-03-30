@@ -1,3 +1,4 @@
+//#region ----IMPORTS----
 import React, { useEffect, useRef, useState } from "react";
 import RecievedMsg from "../components/RecievedMsg";
 import SentMsg from "../components/SentMsg";
@@ -5,59 +6,71 @@ import UserlistItem from "../components/UserlistItem";
 import UserList from "../components/UserList";
 import MessageRef from "./messages.json";
 import { string } from "prop-types";
-import { getChats, getSortedChatList, sendChat } from "../../backend/src/functions";
+import { getChatsListener, getChatListListener, sendChat } from "../../backend/src/functions";
 import { serverTimestamp } from "firebase/firestore";
 import { user_1, user_2 } from "../../backend/src/GlobalValues";
-
+//#endregion
 
 const Chats = () => {
-    const chatEndRef = useRef(null);
-    console.log(user_2)
-    console.log(user_1)
 
+  //#region ----Pata nahi kuch toh kis hai chhotu----
+  const chatEndRef = useRef(null);
   // let msgs = JSON.parse(MessageRef)
   // msgs.forEach(msg => {
   //   console.log(msg);
   // });
+  //#endregion
 
-  const [chatUser, setChatUser] = useState(null);
+  //#region ----USESTATE VARIABLES----
   const[chats,setChats]=useState(null);
   const[chatList,setChatList]=useState(null);
-  // var user_1="divyansh";
-  // var user_2="priyanka";
-  
-  const fetchData = async () => {
-    try {
-      // Call the getChats function and pass the necessary parameters
-      if(user_1!="" && user_2!=""){
-      const docSnap = await getChats(user_1, user_2); // Provide appropriate user_1 and user_2 values
-      // Extract the JSON object from docSnap and set it to state
-      const formattedData = docSnap.docs.reduce((acc, doc) => {
-        acc[doc.id] = doc.data();
-        return acc;
-      }, {});
-      
-      // Set the transformed data to state
-      setChats(formattedData);}
-    } catch (error) {
-      console.error('Error fetching chat data:', error);
-    }
-  }
+  const [selectedUser, setSelectedUser] = useState("")
+  //#endregion
 
+  //#region ----SNAPSHOT LISTENERS - USEEFFECTS----
+  // this useeffect is called once at the start of the page load
+  // this listener is for the chatcards ordering
   useEffect(() => {
-    const fetchChatList = async() => {
-      setChatList(await getSortedChatList(user_1));
-    }
-    fetchData()
-    fetchChatList()
     if(chatEndRef.current){
       chatEndRef.current.scrollIntoView();
     }
+    const unsubscribe = getChatListListener(user_1, (snapshotArray) => {
+      setChatList(snapshotArray)
+    });
+    return () => {
+      unsubscribe();
+    };
   }, [])
+
   
+  //this useeffect is called every time the user clicks on a chat card
+  // this listener is for when the user clicks on a chat card and listens for new chats
+  useEffect(() => {
+    let unsubscribeFunction;
+
+    const fetchData = async () => {
+        unsubscribeFunction = await getChatsListener(user_1, selectedUser, (formattedData) => {
+          console.log("New mesasge sent/received")
+          setChats(formattedData)
+        });
+    };
+    //check this also properly
+    if(user_1 !== "" && selectedUser !== ""){
+      fetchData();
+    }
+    // Cleanup function to unsubscribe when component unmounts
+    return () => {
+        if (unsubscribeFunction) {
+            unsubscribeFunction();
+        }
+    };
+  }, [selectedUser]);
+  //#endregion
+  
+  //#region ----SEND MESSAGE-----
   const sendMsg = (msgSnapshot) => {
     const msgText = document.getElementById("messageInput").value;
-    document.getElementById("messageInput").setAttribute("");
+    document.getElementById("messageInput").value = '';
     const newID = new Date().toISOString() + '+' +user_1
     const createdAt = serverTimestamp()
     const newEntry = {
@@ -73,11 +86,13 @@ const Chats = () => {
     setChats({...newEntry ,...chats});
 
   };
-
+  //#endregion
+  
+  //#region ----REACT RENDERING----
   return (
 
     <div className="h-[calc(100%-96px)] flex bg-amber-500">
-      {chatList !== null &&<UserList chatCardList = {chatList} fetchDataFunc = {fetchData}/>}
+      {chatList !== null &&<UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
       <div className="bg-sky-00 w-1 invisible lg:visible lg:w-3/4">
         <div className="bg-[#299595] h-[45px] flex items-center pl-4 border-t-[2px] border-b-[2px] border-black">
           <img
@@ -115,6 +130,8 @@ const Chats = () => {
       </div>
     </div>
   );
+  //#endregion
+
 };
 
 export default Chats;
