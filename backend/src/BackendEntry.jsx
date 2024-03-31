@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import {login, createChat, sendChat, heartBeatId, getChats, getSortedChatList, logout} from "./functions"
+import {login, createChat, sendChat, heartBeatId, getChats, getSortedChatList, logout, getChatListListener, getChatsListener} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 import { serverTimestamp } from "firebase/firestore";
@@ -8,7 +8,7 @@ import { spectatorMode } from "./GlobalValues";
 
 
 export default function BackendEntry(){
-  
+
 
   // useEffect( ()=>{
   //   funcs();
@@ -21,6 +21,7 @@ export default function BackendEntry(){
   const [user_1, setUser_1] = useState('');
   const [user_2, setUser_2] = useState('');
   const [chatMsg, setChatMsg] = useState('');
+  const [subscribedUser, setSubscribedUser] = useState('');
 
   const [isSpectatorMode, setIsSpectatorMode] = useState(spectatorMode);
 
@@ -40,6 +41,14 @@ export default function BackendEntry(){
     if(user_1>user_2) return user_2 + '+' + user_1
     else return user_1 + '+' + user_2
   }
+
+
+
+
+const handleClickk = async () => {
+  setSubscribedUser(user_2)  
+}
+
   return (
     <div>
       <input className="border-[2px] border-black" type="text" onChange={(e)=>setUID(e.target.value)}/>
@@ -62,7 +71,7 @@ export default function BackendEntry(){
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{stopHeartbeat(heartBeatId)}}>Stop HeartBeat</button>
       
       <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{testGetSort(user_1)}}>getchat list</button>
+      <button className="border-[2px] border-black bg-red-500" onClick={handleClickk}>set chat name</button>
 
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{logout(user_1)}}>Logout</button>
