@@ -35,7 +35,7 @@ const EnterUsername = () => {
                 <span className=" text-3xl font-bold align-middle">Enter Username:</span>
                 <div className="flex justify-around items-center mt-4 w-11/12 sm:w-2/3 md:w-[450px] h-12">
                     <input className="bg-gray-200 border-[1px] text-base border-black rounded-xl h-10 sm:h-12 px-2 sm:px-4 py-2 w-4/5 mx-2" placeholder="I am..." id="UsernameInput" onChange={(e)=>setUserId(e.target.value)}/>
-                    <button className="bg-black text-white w-1/5 rounded-2xl h-10 sm:h-12" >Go</button>
+                    <button className="bg-black text-white w-1/5 rounded-2xl h-10 sm:h-12" onClick={async () => {await login(userId); checkStatus() ;}}>Go</button>
                 </div>
                 {usernameActiveStatus && <UsernameInUse/>}
         </div>

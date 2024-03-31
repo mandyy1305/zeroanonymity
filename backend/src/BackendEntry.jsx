@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import {login, createChat, sendChat, heartBeatId, getChats, getSortedChatList, logout, getChatListListener, getChatsListener} from "./functions"
+import {login, createChat, sendChat, heartBeatId, logout, getChatListListener, getChatsListener} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 import { serverTimestamp } from "firebase/firestore";
@@ -76,9 +76,6 @@ const handleClickk = async () => {
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={()=>{logout(user_1)}}>Logout</button>
 
-      <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getSortedChatList(user_1)}}>Get Sorted List Time</button>
-      
     </div>
     
   )

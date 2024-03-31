@@ -1,4 +1,4 @@
-import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
 import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue, user_1, user_2 } from "./GlobalValues";
@@ -209,11 +209,17 @@ export const sendChat = async (user_1, user_2, message, messageId, createdAt ) =
 //#endregion
 
 //#region RETRIEVING CHATS & CHATLISTS BETWEEN FROM DB
+export const getChatsBeforeTimestamp = () =>{
+
+}
+
 export const getChatListListener = (user_1, callback) => {
     const docRef = doc(db, 'users', user_1); // Replace 'your_collection_name' with the name of your collection
     const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
         if(docSnapshot.exists()){
+            console.log(docSnapshot.data().chatList["bhushan"])
             const dataArray = Object.entries(docSnapshot.data().chatList);
+
             // Sort the array based on timestamps
             dataArray.sort((a, b) => {
                 const aSeconds = a[1]; // Use 0 if a[1].seconds is null or undefined
@@ -240,10 +246,16 @@ export const getChatListListener = (user_1, callback) => {
 
 export const getChatsListener = async (user_1, user_2, callback) => {
 
+    let lastTimestamp = null
+    const timestampDocRef = doc(db, 'users', user_1);
+    const lastTimestampDoc = await getDoc(timestampDocRef);
+    if(lastTimestampDoc.exists()){
+        lastTimestamp = lastTimestampDoc.data().chatList[user_2]
+    }
     // Wait for chatIdOrder() to complete
     const chatId = await chatIdOrder(user_1, user_2);
-
-    const q = query(collection(db, "chats", chatId, "messages"), orderBy('createdAt', 'desc'), limit(50));
+    //const lastTimestamp
+    const q = query(collection(db, "chats", chatId, "messages"), orderBy('createdAt', 'desc'), where('createdAt', '>=', lastTimestamp));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
         if(user_1!="" && user_2!=""){  
