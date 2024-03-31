@@ -16,3 +16,4 @@ export async function setUser_2(str){
     user_2=str;
     console.log(user_2)
 }
+

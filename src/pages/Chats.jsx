@@ -11,7 +11,7 @@ import { user_1, user_2 } from "../../backend/src/GlobalValues";
 
 
 const Chats = () => {
-    const chatEndRef = useRef(null);
+    // const chatEndRef = useRef(null);
     console.log(user_2)
     console.log(user_1)
 
@@ -50,9 +50,9 @@ const Chats = () => {
     }
     fetchData()
     fetchChatList()
-    if(chatEndRef.current){
-      chatEndRef.current.scrollIntoView();
-    }
+    // if(chatEndRef.current){
+    //   chatEndRef.current.scrollIntoView();
+    // }
   }, [])
   
   const sendMsg = (msgSnapshot) => {
@@ -75,7 +75,6 @@ const Chats = () => {
   };
 
   return (
-
     <div className="h-[calc(100%-96px)] flex bg-amber-500">
       {chatList !== null &&<UserList chatCardList = {chatList} fetchDataFunc = {fetchData}/>}
       <div className="bg-sky-00 w-1 invisible lg:visible lg:w-3/4">
@@ -85,7 +84,7 @@ const Chats = () => {
             alt="I"
             className="rounded-full h-8 w-8"
           />
-          <span className="ml-4 text-lg font-semibold text-white">Someone</span>
+          <span className="ml-4 text-lg font-semibold text-white">{user_2}</span>
         </div>
         <div className="bg-sky-100 flex h-[105%] flex-col ">
           <div className="m-3 rounded-xl md:h-[75%]  border-[1px] border-black p-2 flex flex-col overflow-y-auto chat-area no-scrollbar">
