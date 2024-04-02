@@ -38,6 +38,7 @@ const Chats = () => {
     */
     setLoadingMoreChats(true);
     //TODO: ADD A LOADING SCREEN
+    //TODO: Check for null value in getEarliestChatTimestamp
     const timeStamp = await getEarliestChatTimestamp(user_1, user_2)
     await getChatsBeforeTimestamp(user_1, user_2, timeStamp, (formattedData) => {
       if(Object.keys(formattedData).length === 0){
@@ -60,8 +61,8 @@ const Chats = () => {
     const container = chatContainerRef.current;      
     
     if (container) {
-      //Checks if the user has manually scrolled up (with some buffer of 100px)
-      setUserScrolledUp((container.scrollHeight - (container.scrollTop + container.clientHeight)) > 100);
+      //Checks if the user has manually scrolled up (with some buffer of 70px)
+      setUserScrolledUp((container.scrollHeight - (container.scrollTop + container.clientHeight)) > 70);
       
       //LOAD MORE CHATS ONLY IF:
       //1. USER HAS SCROLLED TO TOP 
@@ -142,7 +143,6 @@ const Chats = () => {
       setUserScrolledUp(false)
       setLoadingMoreChats(false)
       setMoreChatsAvailable(true)
-      setChatsHeight(0)
     }
 
     // Cleanup function to unsubscribe when component unmounts
@@ -175,7 +175,7 @@ const Chats = () => {
 
       // Scroll to the bottom on 2 conditions:
       // 1. The user has scrolled up manually and sends a text
-      // 2. The user is roughly on the bottom of the screen (100 px buffer) and sends or receives a text
+      // 2. The user is roughly on the bottom of the screen (70 px buffer) and sends or receives a text
       if (!userScrolledUp) {
         container.scrollTop = container.scrollHeight;
       }

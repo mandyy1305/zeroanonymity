@@ -244,7 +244,7 @@ export const getChatsBeforeTimestamp = async (user_1, user_2, timeStampJSON, cal
         */
         const   timeStamp = new Timestamp(timeStampJSON.seconds, timeStampJSON.nanoseconds)
         const chatCollection = collection(db, 'chats', await chatIdOrder(user_1, user_2), 'messages');
-        const q = query(chatCollection, orderBy('createdAt', 'desc'),where('createdAt', '<', timeStamp), limit(20));
+        const q = query(chatCollection, orderBy('createdAt', 'desc'),where('createdAt', '<', timeStamp), limit(5));
         const querySnapshot = await getDocs(q);
         
         const formattedData = querySnapshot.docs.reduce((acc, doc) => {
@@ -402,7 +402,3 @@ export const getChatsListener = async (user_1, user_2, callback) => {
 };
 
 //#endregion
-
-
-
-
