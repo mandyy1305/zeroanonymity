@@ -1,23 +1,41 @@
-import { FieldPath, Firestore, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+//#region ----IMPORTS----
+import { FieldPath, Firestore, Timestamp, addDoc, arrayUnion, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import {db} from "./firebase"
 import { startHeartbeat } from "./HeartBeatSignal";
 import { setSpectatorMode, setUser_1, spectatorMode, timeOutValue, user_1, user_2 } from "./GlobalValues";
 
 export let heartBeatId;
+//#endregion
 
 //#region ----- HELPER FUNCTIONS -----
-export const locatlDate = (utcTime) => {
-    const date = new Date(utcTime)
-    const localDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
-    return localDate.toISOString();
-}
 
+// Returns the Chat ID between two users in alphabetical order
 const chatIdOrder = async (user_1, user_2) =>{ 
     if(user_1>user_2){
         [user_1, user_2] = [user_2, user_1];
     }
     return user_1 + '+' + user_2;
 }
+
+// Function to get data from session storage
+const getSessionStorage = (key) => {
+    try {
+      const data = sessionStorage.getItem(key);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Error getting data from session storage:', error);
+      return null;
+    }
+  };
+  
+// Function to set data in session storage
+const setSessionStorage = (key, value) => {
+try {
+    sessionStorage.setItem(key, JSON.stringify(value));
+} catch (error) {
+    console.error('Error setting data in session storage:', error);
+}
+};
 
 //#endregion
 
@@ -39,16 +57,14 @@ export const login = async (user_id) => {
                 isActive: true,
                 lastActive: new Date().toISOString()
             })
-
+            
+            //TODO: Enable Heartbeat signals
             //start heartbeat signals upon successful login
             //heartBeatId = startHeartbeat(user_id);
-
-            console.log("FullAccess" + spectatorMode);
         }
         const userPartialAccess = async () => {
             // function to give partial access to user while log in
             setSpectatorMode(true)
-            console.log("PartialAccess" + spectatorMode);
         }
 
 
@@ -84,7 +100,6 @@ export const login = async (user_id) => {
                 chatList: []
             });
             setSpectatorMode(false)
-            console.log("Document written with ID: ", docRef.id);
         }
         
     }
@@ -112,9 +127,10 @@ export const logout = async (user_id) => {
 
 //#region CREATE CHAT
 export const checkChatExistence = async (user_2) => {
-    //KUCH TOH LIKHNA BAAKI HAI    
+    //TODO: KUCH TOH LIKHNA BAAKI HAI  (THIS IS FOR ADD CHAT FEATURE)  
 }
 
+// Adds user_1 to the ChatList of user_2
 const addUserToChatList = async (user_1, user_2) => {
     try{
         const collectionRef = collection(db, "users");
@@ -129,7 +145,6 @@ const addUserToChatList = async (user_1, user_2) => {
                 lastActive: new Date().toISOString(),
                 chatList: {}
             });
-            console.log("Document written with ID: ", docRef.id);
         }
         await setDoc(docRef, {
             chatList:{
@@ -141,6 +156,8 @@ const addUserToChatList = async (user_1, user_2) => {
         console.error("Error adding document: ", e);
     }
 }
+
+// Create a chat record between two users in DB
 export const createChat = async (user_1, user_2) => {
     
     // Adding user_2 to chatList of user_1
@@ -158,7 +175,6 @@ export const createChat = async (user_1, user_2) => {
             user_2: user_2,
             unopened_msgs: 0 
         });
-        console.log("Document written with ID: ", docRef.id);
     }
     catch (e) {
         console.error("Error adding document: ", e);
@@ -167,11 +183,11 @@ export const createChat = async (user_1, user_2) => {
 //#endregion
 
 //#region SEND CHAT
+
+// Sets the chat document
 const setChatDocument = async (user_1, user_2, message, messageId, createdAt ) =>{
     try{
-        // senderId == user_1
         const chatId = await chatIdOrder(user_1, user_2)
-        //const messageId = new Date().toISOString() + "+" + user_1;
         const collectionRef = collection(db, 'chats', chatId, 'messages');
         const docRef = doc(collectionRef, messageId);
 
@@ -180,27 +196,27 @@ const setChatDocument = async (user_1, user_2, message, messageId, createdAt ) =
             senderId: user_1,
             createdAt: createdAt
         });
-        console.log("Document written with ID: ", docRef.id);
-    }
-    catch(e){
-        console.error("Error adding document: ", e);
-    }
-}
-const setCreatedAt = async (user_1, user_2, createdAt) =>{
-    console.log(user_2)
-    try{
-        const collectionRef = collection(db, 'users');
-        const docRef = doc(collectionRef, user_1);
-        const docSnap = await setDoc(docRef, {
-            chatList: {[user_2]: createdAt}
-        }, { merge: true });
-        console.log("Latest message updated with ID: ", docRef.id);
     }
     catch(e){
         console.error("Error adding document: ", e);
     }
 }
 
+// Sets the timestamp of last message 
+const setCreatedAt = async (user_1, user_2, createdAt) =>{
+    try{
+        const collectionRef = collection(db, 'users');
+        const docRef = doc(collectionRef, user_1);
+        const docSnap = await setDoc(docRef, {
+            chatList: {[user_2]: createdAt}
+        }, { merge: true });
+    }
+    catch(e){
+        console.error("Error adding document: ", e);
+    }
+}
+
+// Caller function - sends the chat
 export const sendChat = async (user_1, user_2, message, messageId, createdAt ) => {
     setChatDocument(user_1, user_2, message, messageId, createdAt );
     setCreatedAt(user_1, user_2, createdAt);
@@ -209,67 +225,180 @@ export const sendChat = async (user_1, user_2, message, messageId, createdAt ) =
 //#endregion
 
 //#region RETRIEVING CHATS & CHATLISTS BETWEEN FROM DB
-export const getChatsBeforeTimestamp = () =>{
 
+// Get the timestamp of the earliest chat in a convo
+export const getEarliestChatTimestamp = async (user_1, user_2) => {
+    const chatId = user_1+'+'+user_2
+    const chats = getSessionStorage(chatId);
+    const lastKey = Object.keys(chats).pop(); // Get the last property name
+    const lastValue = chats[lastKey]; 
+    return lastValue.createdAt
 }
 
-export const getChatListListener = (user_1, callback) => {
-    const docRef = doc(db, 'users', user_1); // Replace 'your_collection_name' with the name of your collection
-    const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
-        if(docSnapshot.exists()){
-            console.log(docSnapshot.data().chatList["bhushan"])
-            const dataArray = Object.entries(docSnapshot.data().chatList);
+// Get the chats BEFORE a certain timestamp
+export const getChatsBeforeTimestamp = async (user_1, user_2, timeStampJSON, callback) =>{
+    try {
+        /*
+            -> RETRIEVES ALL THE DOCUMENTS OF A COLLECTION AFTER THE GIVEN TIMESTAMP
+            -> CALLED WHENEVER THERE A CHAT CARD IS CLICKED TO FETCH NEW CHATS FROM THE DB IF ANY
+        */
+        const   timeStamp = new Timestamp(timeStampJSON.seconds, timeStampJSON.nanoseconds)
+        const chatCollection = collection(db, 'chats', await chatIdOrder(user_1, user_2), 'messages');
+        const q = query(chatCollection, orderBy('createdAt', 'desc'),where('createdAt', '<', timeStamp), limit(20));
+        const querySnapshot = await getDocs(q);
+        
+        const formattedData = querySnapshot.docs.reduce((acc, doc) => {
+            acc[doc.id] = doc.data();
+            return acc;
+        }, {}); 
 
-            // Sort the array based on timestamps
-            dataArray.sort((a, b) => {
-                const aSeconds = a[1]; // Use 0 if a[1].seconds is null or undefined
-                const bSeconds = b[1]; // Use 0 if b[1].seconds is null or undefined
-                if (aSeconds === null && bSeconds === null) {
-                    return 0;
-                } else if (aSeconds === null) {
-                    return -1;
-                } else if (bSeconds === null) {
-                    return 1;
-                } else {
-                    return bSeconds - aSeconds;
-                }
-            });
-            // Extract names from sorted array
-            const sortedNames = dataArray.map(([name, _]) => name);
-            callback(sortedNames); // Callback function to handle the snapshot data in the component
+        const ss_chats = getSessionStorage(user_1+'+'+user_2);
+        const mergedData = Object.assign(ss_chats, formattedData)
+        setSessionStorage(user_1 + '+' + user_2, mergedData)
+        
+        callback(formattedData)
+
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+      }
+}
+
+// Get the conversation history 
+export const getChats = async (user_1, user_2 ,callback) =>{
+    try {
+        /*
+            -> FIRST CHEKCS IF ANY CHAT CONVO IS AVAILABLE IN SESSION STORAGE
+            -> IF YES, RETURNS DATA FROM SESSION STORAGE
+            -> IF NO, REQUESTS AND RETURNS DATA FROM FIRESTORE
+        */
+        const storedChats = getSessionStorage(user_1+'+'+user_2);
+        if (storedChats) {
+          callback(storedChats)
+          return;
         }
-    });
-  
-    // Return the unsubscribe function to allow cleanup when component unmounts
-    return unsubscribe;
+
+        const chatCollection = collection(db, 'chats', await chatIdOrder(user_1, user_2), 'messages');
+        const q = query(chatCollection,orderBy('createdAt', 'desc'), limit(5));
+        const querySnapshot = await getDocs(q);
+
+        const formattedData = querySnapshot.docs.reduce((acc, doc) => {
+            acc[doc.id] = doc.data();
+            return acc;
+        }, {}); 
+        
+        setSessionStorage(user_1+'+'+user_2, formattedData);
+        callback(formattedData)
+
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+      }
+}
+
+// Get the chats AFTER a certain timestamp
+const getChatsAfterTimestamp = async (user_1, user_2, timeStampJSON) =>{
+    try {
+        /*
+            -> RETRIEVES ALL THE DOCUMENTS OF A COLLECTION AFTER THE GIVEN TIMESTAMP
+            -> CALLED WHENEVER THERE A CHAT CARD IS CLICKED TO FETCH NEW CHATS FROM THE DB IF ANY
+        */
+        const   timeStamp = new Timestamp(timeStampJSON.seconds, timeStampJSON.nanoseconds)
+        const chatCollection = collection(db, 'chats', await chatIdOrder(user_1, user_2), 'messages');
+        const q = query(chatCollection, orderBy('createdAt', 'desc'),where('createdAt', '>', timeStamp));
+        const querySnapshot = await getDocs(q);
+        
+        const formattedData = querySnapshot.docs.reduce((acc, doc) => {
+            acc[doc.id] = doc.data();
+            return acc;
+        }, {}); 
+
+        const ss_chats = getSessionStorage(user_1+'+'+user_2);
+        const mergedData = Object.assign({},formattedData, ss_chats)
+        setSessionStorage(user_1 + '+' + user_2, mergedData)
+        
+        return formattedData
+
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+      }
+}
+
+// Listens to Chat List updates
+export const getChatListListener = (user_1, callback) => {
+    try{
+        /* 
+            ->THIS SECTION JUST ADDS A LISTENER TO THE CHAT LIST AND 
+                UPDATES EVERY TIME THERE IS A NEW MESSAGE FROM ANYONE
+        */
+        const docRef = doc(db, 'users', user_1);
+        const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
+            if(docSnapshot.exists()){
+                const dataArray = Object.entries(docSnapshot.data().chatList);
+                dataArray.sort((a, b) => {
+                    const aSeconds = a[1];
+                    const bSeconds = b[1];
+                    if (aSeconds === null && bSeconds === null) {
+                        return 0;
+                    } else if (aSeconds === null) {
+                        return -1;
+                    } else if (bSeconds === null) {
+                        return 1;
+                    } else {
+                        return bSeconds - aSeconds;
+                    }
+                });
+                // Extract names from sorted array
+                const sortedNames = dataArray.map(([name, _]) => name);
+                callback(sortedNames); 
+            }
+        });
+        // Return the unsubscribe function to allow cleanup when component unmounts
+        return unsubscribe;
+    }catch (error) {
+        console.error('Error fetching chats:', error);
+    }
   };
 
+// Listens to new chats - shd integrate it 
 export const getChatsListener = async (user_1, user_2, callback) => {
-
-    let lastTimestamp = null
-    const timestampDocRef = doc(db, 'users', user_1);
-    const lastTimestampDoc = await getDoc(timestampDocRef);
-    if(lastTimestampDoc.exists()){
-        lastTimestamp = lastTimestampDoc.data().chatList[user_2]
-    }
-    // Wait for chatIdOrder() to complete
-    const chatId = await chatIdOrder(user_1, user_2);
-    //const lastTimestamp
-    const q = query(collection(db, "chats", chatId, "messages"), orderBy('createdAt', 'desc'), where('createdAt', '>=', lastTimestamp));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-        if(user_1!="" && user_2!=""){  
-            const formattedData = snapshot.docs.reduce((acc, doc) => {
-                acc[doc.id] = doc.data();
-                return acc;
-            }, {});    
-            // Set the transformed data to state
-            callback(formattedData)   
+    try{
+        /* 
+            ->THIS SECTION CHECKS IF A CHAT CONVO IS STORED IN SESSION STORAGE 
+            ->IF YES, IT RETRIEVES DOCUMENTS (CHATS) CREATED AFTER THE LATEST CHAT STORED IN SESSION STORAGE 
+        */
+        const storedChats = getSessionStorage(user_1+'+'+user_2);
+        if (storedChats) {
+            const latestChatKey = Object.keys(storedChats)[0]
+            const lastTimestamp = storedChats[latestChatKey].createdAt
+            const formattedData = await getChatsAfterTimestamp(user_1, user_2, lastTimestamp);
+            callback(formattedData)
         }
-        // Handle snapshot data
-    });
-    // Return the unsubscribe function directly
-    return unsubscribe;
+
+        /* 
+            ->THIS SECTION JUST ADDS A LISTENER TO THE CURRENT CHAT CARD 
+        */
+        const chatId = await chatIdOrder(user_1, user_2);
+        const q = query(collection(db, "chats", chatId, "messages"), orderBy('createdAt', 'desc'), where('createdAt', '>', new Date()));
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            
+            let formattedData
+            const lastDoc = snapshot.docs[0];
+            if(lastDoc !== undefined){
+                formattedData = {
+                    [lastDoc.id]: lastDoc.data()
+                };
+            }
+            const ss_chats = getSessionStorage(user_1+'+'+user_2);
+            const mergedData = Object.assign({},formattedData, ss_chats)
+            setSessionStorage(user_1+'+'+user_2,mergedData)
+            
+            callback(formattedData)   
+            
+        });
+        return unsubscribe;
+    }catch (error) {
+        console.error('Error fetching chats:', error);
+    }
 };
 
 //#endregion

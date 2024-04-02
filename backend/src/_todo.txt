@@ -12,3 +12,5 @@ change panel of UsernameInUse from yes/no to only button of enter spectator mode
 logout button to be added
 
 add security - firebase keys visible from chrome
+
+new message notif on screen when scrolled up

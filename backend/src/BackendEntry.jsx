@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import {login, createChat, sendChat, heartBeatId, logout, getChatListListener, getChatsListener} from "./functions"
+import {login, createChat, sendChat, heartBeatId, logout, getChatListListener, getChatsListener, getChats} from "./functions"
 import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 import { serverTimestamp } from "firebase/firestore";
@@ -68,7 +68,7 @@ const handleClickk = async () => {
       <p>Hello, {isSpectatorMode ? "Not yet logged in" : "Logged in"}</p>
 
       <br /><br />
-      <button className="border-[2px] border-black bg-red-500" onClick={()=>{stopHeartbeat(heartBeatId)}}>Stop HeartBeat</button>
+      <button className="border-[2px] border-black bg-red-500" onClick={()=>{getChats(user_1, user_2,()=>{})}}>session storage chats</button>
       
       <br /><br />
       <button className="border-[2px] border-black bg-red-500" onClick={handleClickk}>set chat name</button>

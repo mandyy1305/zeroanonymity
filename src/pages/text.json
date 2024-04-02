@@ -1,20 +1,12 @@
-[
-    {
-        "Timestamp(seconds=1711647586, nanoseconds=737000000)": "manish"
-    },
-    {
-        "Timestamp(seconds=1711643881, nanoseconds=621000000)": "himanshu"
-    },
-    {
-        "Timestamp(seconds=1711643294, nanoseconds=117000000)": "shubham"
-    },
-    {
-        "Timestamp(seconds=1711642832, nanoseconds=410000000)": "priyanka"
-    },
-    {
-        "Timestamp(seconds=1711642250, nanoseconds=271000000)": "sachika"
-    },
-    {
-        "Timestamp(seconds=1711536794, nanoseconds=724000000)": "esha"
-    }
-]
+{
+  "2024-03-31T20:06:01.868Z+divyansh": {
+    "message": ",kjkjnkjnkjh",
+    "createdAt": { "seconds": 1711915562, "nanoseconds": 417000000 },
+    "senderId": "divyansh"
+  },
+  "2024-03-31T20:00:59.404Z+divyansh": {
+    "senderId": "divyansh",
+    "message": "kaise ho",
+    "createdAt": { "seconds": 1711915259, "nanoseconds": 710000000 }
+  }
+}
