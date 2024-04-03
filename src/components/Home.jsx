@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { delay, motion } from "framer-motion";
-
+import HeroText from "./HeroText";
 const Home = () => {
   const messageBox = {
     hover: {
@@ -18,12 +18,9 @@ const Home = () => {
 
   return (
     <div className="w-full flex justify-center overflow-x-hidden">
-      <motion.span
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2 }}
-        className="h-32 w-64 lg:w-[600px] z-0  bg-hero bg-contain bg-no-repeat bg-center absolute top-60 lg:top-48"
-      />
+      <div className="h-32 w-68 lg:w-[600px] text-4xl lg:text-7xl absolute top-60 lg:top-48 flex justify-center items-center font-bold font-space-grotesk">
+        <HeroText text="Z e r o - A n o n y m i t y" />
+      </div>
       <motion.span
         variants={messageBox}
         drag
@@ -44,7 +41,7 @@ const Home = () => {
         whileHover="hover"
         whileTap="tap"
         initial="initial"
-        className="h-28 lg:h-56 z-50 w-36 lg:w-80 bg-japnese bg-contain bg-no-repeat bg-center absolute top-[520px] left-0  lg:top-[450px] lg:left-20"
+        className="h-28 lg:h-56 z-40 w-36 lg:w-80 bg-japnese bg-contain bg-no-repeat bg-center absolute top-[520px] left-0  lg:top-[450px] lg:left-20"
       />
       <motion.span
         variants={messageBox}
@@ -55,7 +52,7 @@ const Home = () => {
         whileHover="hover"
         whileTap="tap"
         initial="initial"
-        className="h-28 lg:h-56 w-36 lg:w-80 z-50  bg-russian bg-contain bg-no-repeat bg-center absolute top-[550px]  lg:top-96 right-0"
+        className="h-28 lg:h-56 w-36 lg:w-80 z-40  bg-russian bg-contain bg-no-repeat bg-center absolute top-[550px]  lg:top-96 right-0"
       />
       <motion.span
         variants={messageBox}

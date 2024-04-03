@@ -9,16 +9,17 @@ const Contact = () => {
         <span className="absolute bottom-6 right-[167px] lg:bottom-6 lg:right-52 text-xs lg:text-sm">
           jk here’s our email:
         </span>
-        <motion.span
+        <motion.a
           className="absolute bottom-6 right-4 lg:bottom-6 lg:right-4 text-xs lg:text-sm"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
           whileTap={{ opacity: 1 }}
           onTapCancel={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
+          href="mailto:zero.anonymity@gmail.com"
         >
           zero.anonymity@gmail.com
-        </motion.span>
+        </motion.a>
       </div>
     </div>
   );

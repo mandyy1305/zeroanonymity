@@ -16,6 +16,9 @@ export default {
       boxShadow: {
         "3xl": "0px 5px rgba(0, 0, 0, 1)",
       },
+      fontFamily: {
+        "space-grotesk": ["Space Grotesk", "sans-serif"],
+      },
     },
   },
   plugins: [],

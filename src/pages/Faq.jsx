@@ -2,7 +2,7 @@ import React from "react";
 
 const Faq = () => {
   return (
-    <div className="lg:ml-[200px] box-border">
+    <div className="mx-8 lg:ml-[200px] h-[calc(100vh-250px)]">
       <h1 className="text-2xl font-bold lg:text-3xl lg:my-10 ">
         Frequently Asked Questions:
       </h1>
