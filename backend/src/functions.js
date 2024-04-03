@@ -57,13 +57,13 @@ export const login = async (user_id) => {
                 isActive: true,
                 lastActive: new Date().toISOString()
             })
-            
-            //TODO: Enable Heartbeat signals
+                        //TODO: Enable Heartbeat signals
             //start heartbeat signals upon successful login
             //heartBeatId = startHeartbeat(user_id);
         }
         const userPartialAccess = async () => {
             // function to give partial access to user while log in
+            setUser_1(user_id)
             setSpectatorMode(true)
         }
 

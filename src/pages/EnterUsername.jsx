@@ -13,14 +13,16 @@ const EnterUsername = () => {
     }
     const [usernameActiveStatus,setUsernameActiveStatus] = useState(false);
     const[userId,setUserId]=useState("");
+    const[access,setAccess]=useState(false);
     //for bakchodi
       var checkStatus = ()=>{
         if(spectatorMode){
           setUsernameActiveStatus(true);
+          setAccess(true)
+          {access && ToChatPage(); }
         }else{
           setUsernameActiveStatus(false);
           ToChatPage();
-
           // window.location.href='/chats';
           // event.preventDefault();
         }
@@ -35,9 +37,21 @@ const EnterUsername = () => {
                 <span className=" text-3xl font-bold align-middle">Enter Username:</span>
                 <div className="flex justify-around items-center mt-4 w-11/12 sm:w-2/3 md:w-[450px] h-12">
                     <input className="bg-gray-200 border-[1px] text-base border-black rounded-xl h-10 sm:h-12 px-2 sm:px-4 py-2 w-4/5 mx-2" placeholder="I am..." id="UsernameInput" onChange={(e)=>setUserId(e.target.value)}/>
-                    <button className="bg-black text-white w-1/5 rounded-2xl h-10 sm:h-12" onClick={async () => {await login(userId); checkStatus() ;}}>Go</button>
+                    <button className="bg-black text-white w-1/5 rounded-2xl h-10 sm:h-12" onClick={async () => {await login(userId); checkStatus() ;}}>Go</button>
                 </div>
-                {usernameActiveStatus && <UsernameInUse/>}
+                {usernameActiveStatus && <div className="text-center flex flex-col">
+                    <span className="font-bold text-lg mt-8">Oops, this username is already being used.</span>
+                    <span className="mt-4 font-semibold text-lg">Wait until it is available <br/> or <br/> Spectate the user</span>
+                   <div className=" w-11/12 mx-auto  md:w-full  flex flex-col justify-evenly mt-8 p-4 border-2 border-black rounded-lg">
+                        {/* <p className="text-lg font-bold mt-4">Enter Spectator mode ?</p> */}
+                        <div className=" flex flex-col justify-evenly items-center mt-6 gap-5 mb-4">
+                            <button className="bg-black text-white font-semibold w-4/6 h-10 rounded-lg" 
+                            onClick={async () => {await login(userId); checkStatus()
+                            }}>Enter Spectator Mode</button>
+                            <button className="bg-white text-black font-semibold w-4/6 h-10 rounded-lg border-2 border-black">Pick Random Username</button>
+                      </div>
+                   </div>
+                </div> }
         </div>
     );
   };

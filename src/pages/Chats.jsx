@@ -8,7 +8,7 @@ import MessageRef from "./messages.json";
 import { string } from "prop-types";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp } from "../../backend/src/functions";
 import { serverTimestamp } from "firebase/firestore";
-import { user_1, user_2 } from "../../backend/src/GlobalValues";
+import { spectatorMode, user_1, user_2 } from "../../backend/src/GlobalValues";
 //#endregion
 
 const Chats = () => {
@@ -78,10 +78,11 @@ const Chats = () => {
     
   };
   //#endregion
-
-      //#region ----SEND MESSAGE-----
+  
+  // #region ----SEND MESSAGE-----
   const sendMsg = (msgSnapshot) => {
     const msgText = document.getElementById("messageInput").value;
+    if(msgText!=""){
     document.getElementById("messageInput").value = '';
     const newID = new Date().toISOString() + '+' +user_1
     const createdAt = serverTimestamp()
@@ -96,10 +97,7 @@ const Chats = () => {
     sendChat(user_1, user_2, msgText, newID, createdAt);
     // Update state
     setChats({...newEntry ,...chats});
-
-    //sets it to false so that chats auto scroll when user sends a text at any scroll view position
-    setUserScrolledUp(false)
-
+  }
   };
   //#endregion
 
@@ -199,22 +197,22 @@ const Chats = () => {
   //#region ----REACT RENDERING----
   return (
 
-    <div className="h-[calc(100%-96px)] flex bg-amber-500" >
+    <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
       {chatList !== null &&<UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
-      <div className="bg-sky-00 w-1 invisible lg:visible lg:w-3/4">
-        <div className="bg-[#299595] h-[45px] flex items-center pl-4 border-t-[2px] border-b-[2px] border-black">
+      <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
+        <div className="bg-white h-[45px] flex items-center pl-4  border-b-[1px] border-black">
           <img
             src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
             alt="I"
             className="rounded-full h-8 w-8"
           />
-          <span className="ml-4 text-lg font-semibold text-white">Someone</span>
+          <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
         </div>
-        <div className="bg-sky-100 flex h-[105%] flex-col ">
+        <div className="bg-white flex h-[105%] flex-col ">
           
           <div
             ref={chatContainerRef}
-            className="m-3 rounded-xl md:h-[75%] border-[1px] border-black p-2 overflow-y-auto chat-area no-scrollbar"
+            className="m-3 rounded-xl md:h-[75%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
             {/* Messages */}
             {chats && Object.entries(chats).reverse().map(([id, data]) =>
@@ -224,13 +222,13 @@ const Chats = () => {
                 )}
           </div>
 
-          <div className="bg-[#00000000] h-1/6 pl-3 flex ">
-            <input
+          <div className="bg-[#00000000] h-1/6  flex justify-center">
+            {spectatorMode ? <div>You can't send message in spectator mode</div>:<input
               id="messageInput"
               type="text"
-              className="w-11/12 h-[35px] rounded-lg p-4 text-sm border-[1px] border-black"
+              className="w-[95%] h-[35px] rounded-lg p-4 text-sm border-[1px] border-black"
               placeholder="Message"
-            />
+            />}
             <div className="flex justify-center items-center bg-gray-600 w-[35px] h-[35px]  ml-4 rounded-full" 
             onClick={sendMsg}></div>
           </div>
