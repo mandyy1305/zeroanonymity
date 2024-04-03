@@ -7,27 +7,23 @@ const HeroText = ({ text }) => {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
       opacity: 1,
-      transition: { staggerChildren: 0.017, delayChildren: 0.01 * i },
+      transition: { staggerChildren: 0.03},
     }),
   };
 
   const child = {
     hidden: {
       opacity: 0,
-      y: 20,
+      y: 400,
       transition: {
-        type: "spring",
-        damping: 10,
-        stiffness: 150,
+        type: "stiff",
       },
     },
     visible: {
       opacity: 1,
       y: -5,
       transition: {
-        type: "spring",
-        damping: 10,
-        stiffness: 150,
+        type: "stiff",
       },
     },
   };
