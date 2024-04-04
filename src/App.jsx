@@ -68,7 +68,7 @@ function App() {
           </NavLink>
         </div>
         <div
-          className=" rounded-3xl h-10 w-[90px] px-2 abs  flex justify-center items-center gap-3 "
+          className=" bg-white rounded-3xl h-10 w-[90px] px-2 abs  flex justify-center items-center gap-3 "
           onClick={() => setIsProfileDropdownOpen((prevState) => !prevState)}
         >
           <img
@@ -76,19 +76,7 @@ function App() {
             alt="I"
             className="drop rounded-full h-8 w-8"
           />
-          {isProfileDropdownOpen ? (
-            <VscChromeClose
-              onClick={() =>
-                setIsProfileDropdownOpen((prevState) => !prevState)
-              }
-            />
-          ) : (
-            <IoIosArrowDown
-              onClick={() =>
-                setIsProfileDropdownOpen((prevState) => !prevState)
-              }
-            />
-          )}
+          {isProfileDropdownOpen ? <VscChromeClose /> : <IoIosArrowDown />}
           {isProfileDropdownOpen && (
             <div className="  w-60 px-6 py-5  absolute z-50 top-14 lg:right-10 right-2 bg-white shadow-sm flex flex-col gap-3  rounded-3xl">
               <span className="drop text-xs">You are logged in as</span>
