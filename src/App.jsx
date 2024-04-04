@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div className="flex flex-col w-screen h-screen max-w-screen-2xl mx-auto ">
-      <nav className=" bg-[#003049] flex items-center justify-between h-24">
+      <nav className=" bg-[#003049] flex items-center justify-between h-20">
         <Link to="/" className="w-36 relative left-6">
           <img src={logo} alt="Logo" />
         </Link>
@@ -56,6 +56,18 @@ function App() {
             Contact
           </NavLink>
         </div>
+        <div className="bg-white rounded-3xl h-10 w-[90px] px-2 relative right-12 mr-10 flex justify-center items-center gap-3 ">
+          <img
+            src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
+            alt="I"
+            className="rounded-full h-8 w-8"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/32/32195.png"
+            alt="I"
+            className="rounded-full h-5 w-5"
+          />
+          </div>
         <IoMenu
           className="lg:hidden absolute right-6"
           size={35}
@@ -98,6 +110,7 @@ function App() {
           >
             Contact
           </Link>
+          
         </div>
       )}
       <Outlet />
