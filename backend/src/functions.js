@@ -126,9 +126,6 @@ export const logout = async (user_id) => {
 //#endregion
 
 //#region CREATE CHAT
-export const checkChatExistence = async (user_2) => {
-    //TODO: KUCH TOH LIKHNA BAAKI HAI  (THIS IS FOR ADD CHAT FEATURE)  
-}
 
 // Adds user_1 to the ChatList of user_2
 const addUserToChatList = async (user_1, user_2) => {
