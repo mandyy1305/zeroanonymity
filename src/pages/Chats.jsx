@@ -9,6 +9,7 @@ import { string } from "prop-types";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp } from "../../backend/src/functions";
 import { serverTimestamp } from "firebase/firestore";
 import { spectatorMode, user_1, user_2 } from "../../backend/src/GlobalValues";
+import ChameleonMode from "../components/ChameleonMode";
 //#endregion
 
 const Chats = () => {
@@ -17,7 +18,8 @@ const Chats = () => {
   const[chats,setChats]=useState(null);
   const[chatList,setChatList]=useState(null);
   const [selectedUser, setSelectedUser] = useState("")
-  
+  const [currentUser, setCurrentUser] = useState(user_1)
+
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [previousScrollHeight, setPreviousScrollHeight]  = useState(null)
   const [loadingMoreChats, setLoadingMoreChats] = useState(false);
@@ -105,17 +107,23 @@ const Chats = () => {
 
 
   //#region ----USEEFFECT - SNAPSHOT LISTENERS----
+
+  // This useeffect is called whenever the user clicks on chameleon mode
+  useEffect(()=>{
+    setChats(null);
+  }, [currentUser])
   
-  // This useeffect is called once at the start of the page load
+  // This useeffect is called at the start of the page load and on chameleon mode
   // This listener is for the chatcards ordering
   useEffect(() => {
     const unsubscribe = getChatListListener(user_1, (snapshotArray) => {
       setChatList(snapshotArray)
     });
     return () => {
+      console.log("Bye Bye See You Later")
       unsubscribe();
     };
-  }, [])
+  }, [currentUser])
   
   //this useeffect is called every time the user clicks on a chat card
   // this listener is for when the user clicks on a chat card and listens for new chats
@@ -209,9 +217,7 @@ const Chats = () => {
             />
             <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
           </div>
-          <div className="mr-20 h-10 flex justify-center mb-2 items-center px-2 rounded-xl border-[2px] border-blue-600">
-            <p className=" font-bold text-blue-600">Chameleon Mode</p>
-          </div>
+          <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
         </div>
         <div className="bg-white flex h-[105%] flex-col ">
           
