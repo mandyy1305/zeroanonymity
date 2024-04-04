@@ -200,13 +200,18 @@ const Chats = () => {
     <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
       {chatList !== null &&<UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
-        <div className="bg-white h-[45px] flex items-center pl-4  border-b-[1px] border-black">
-          <img
-            src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
-            alt="I"
-            className="rounded-full h-8 w-8"
-          />
-          <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
+        <div className="bg-white h-[50px] items-center pl-4  border-b-[1px] border-black flex justify-between">
+          <div className="flex">
+            <img
+              src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
+              alt="I"
+              className="rounded-full h-8 w-8"
+            />
+            <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
+          </div>
+          <div className="mr-20 h-10 flex justify-center mb-2 items-center px-2 rounded-xl border-[2px] border-blue-600">
+            <p className=" font-bold text-blue-600">Chameleon Mode</p>
+          </div>
         </div>
         <div className="bg-white flex h-[105%] flex-col ">
           
