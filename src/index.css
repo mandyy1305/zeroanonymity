@@ -92,3 +92,9 @@ hr {
     scrollbar-width: none; /* Firefox */
   }
 }
+
+.drop {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
