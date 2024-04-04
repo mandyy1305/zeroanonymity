@@ -10,6 +10,7 @@ import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestC
 import { serverTimestamp } from "firebase/firestore";
 import { spectatorMode, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
+import { motion, useAnimation } from "framer-motion";
 //#endregion
 
 const Chats = () => {
@@ -200,7 +201,7 @@ const Chats = () => {
   }, [loadingMoreChats]);
 
   //#endregion
-    
+
 
   //#region ----REACT RENDERING----
   return (

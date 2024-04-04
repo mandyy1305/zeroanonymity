@@ -14,3 +14,6 @@ logout button to be added
 add security - firebase keys visible from chrome
 
 new message notif on screen when scrolled up
+
+TODO: your chats are not encrypted. not only us literally anyone can read whatever you send👍
+TODO: dont call data from db if the user selects the same selected user in chat card
