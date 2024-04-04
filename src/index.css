@@ -6,6 +6,10 @@ a.active {
   @apply border-b-2 text-blue-800;
 }
 
+hr {
+  border-top: 1px solid #baacac;
+}
+
 /* @keyframes bounce {
     50% {
         transform: translateY(-25%);
@@ -80,11 +84,11 @@ a.active {
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    display: none;
   }
- /* Hide scrollbar for IE, Edge and Firefox */
+  /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
-}
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }

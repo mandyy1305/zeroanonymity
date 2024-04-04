@@ -29,8 +29,15 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col w-screen h-screen  mx-auto ">
-      <nav className="  flex items-center justify-between h-20">
+    <div className="flex flex-col w-screen h-screen  mx-auto bg-yellow-100">
+      <nav className="  flex items-center justify-between h-16 lg:mx-12">
+        <div>
+          <IoMenu
+            className="lg:hidden "
+            size={35}
+            onClick={() => setIsNavbarOpen((prevState) => !prevState)}
+          />
+        </div>
         <Link to="/" className="w-36 relative left-6">
           <img src={logo} alt="Logo" />
         </Link>
@@ -60,7 +67,7 @@ function App() {
             Contact
           </NavLink>
         </div>
-        <div className=" rounded-3xl h-10 w-[90px] px-2 relative right-12 mr-10 flex justify-center items-center gap-3 ">
+        <div className=" rounded-3xl h-10 w-[90px] px-2 abs  flex justify-center items-center gap-3 ">
           <img
             src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
             alt="I"
@@ -80,18 +87,23 @@ function App() {
             />
           )}
           {isProfileDropdownOpen && (
-            <div className="w-60 h-24  absolute z-50 top-10 -left-40 bg-gray-200 flex justify-center items-center rounded-3xl">
-              <div className="border-2 w-40 h-12 bg-white border-black rounded-2xl  cursor-pointer flex items-center justify-center ">
-                Log out
+            <div className="w-60 px-6 py-5  absolute z-50 top-14 lg:right-10 right-2 bg-white shadow-sm flex flex-col gap-3  rounded-3xl">
+              <span className="text-xs">You are logged in as</span>
+              <div className="flex items-center justify-center gap-4">
+                <img
+                  src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
+                  alt="I"
+                  className="rounded-full h-8"
+                />
+                <span className="font-semibold text-md ">GigaNiga365</span>
               </div>
+              <hr />
+              <button className=" border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] ">
+                Logout
+              </button>
             </div>
           )}
         </div>
-        <IoMenu
-          className="lg:hidden absolute right-6"
-          size={35}
-          onClick={() => setIsNavbarOpen((prevState) => !prevState)}
-        />
       </nav>
 
       {isNavbarOpen && (
