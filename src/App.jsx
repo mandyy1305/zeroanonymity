@@ -2,9 +2,7 @@ import { Link, Outlet, NavLink } from "react-router-dom";
 import logo from "./img/Z-AnonymityLogo.svg";
 
 import { IoMenu, IoClose } from "react-icons/io5";
-import { FaChevronDown } from "react-icons/fa";
-import { IoIosArrowDown } from "react-icons/io";
-import { VscChromeClose } from "react-icons/vsc";
+
 import { useEffect, useState } from "react";
 import ProfileDropdown from "./components/ProfileDropdown";
 
