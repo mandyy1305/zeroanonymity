@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { setUser_2 } from "../../backend/src/GlobalValues";
+import {  setUserSelected, setUser_2 } from "../../backend/src/GlobalValues";
 
 const UserlistItem = ({username, updateSelectedUserFunc}) => {
-    
     const handleClick = async () => {
+      
       await setUser_2(username);
+      setUserSelected(true);
       updateSelectedUserFunc(username);
     }
   
@@ -13,7 +14,7 @@ const UserlistItem = ({username, updateSelectedUserFunc}) => {
         <img
             src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
             alt="I"
-            className="rounded-full h-12 w-12 bg-green-900"
+            className="rounded-full h-12 w-12 "
           />
           <span className="ml-4 text-lg  font-bold text-black">{username}</span>
         </div>

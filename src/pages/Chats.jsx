@@ -8,7 +8,7 @@ import MessageRef from "./messages.json";
 import { string } from "prop-types";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp } from "../../backend/src/functions";
 import { serverTimestamp } from "firebase/firestore";
-import { spectatorMode, user_1, user_2 } from "../../backend/src/GlobalValues";
+import { spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
 import { motion, useAnimation } from "framer-motion";
 //#endregion
@@ -25,7 +25,6 @@ const Chats = () => {
   const [previousScrollHeight, setPreviousScrollHeight]  = useState(null)
   const [loadingMoreChats, setLoadingMoreChats] = useState(false);
   const [moreChatsAvailable, setMoreChatsAvailable] = useState(true);
-
   const chatContainerRef = useRef();
   //#endregion
 
@@ -152,6 +151,13 @@ const Chats = () => {
       setMoreChatsAvailable(true)
     }
 
+    // if(chatList.length){
+    //   console.log("empty")
+    // }else{
+    //   console.log("not empty")
+    // }
+  
+
     // Cleanup function to unsubscribe when component unmounts
     return () => {
         if (unsubscribeFunction) {
@@ -202,14 +208,14 @@ const Chats = () => {
 
   //#endregion
 
-
+  
   //#region ----REACT RENDERING----
   return (
 
     <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
       {chatList !== null &&<UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
-        <div className="bg-white h-[50px] items-center pl-4  border-b-[1px] border-black flex justify-between">
+        {userSelected && <div className="bg-white h-[50px] w-[69.6%] items-center pl-4  border-b-[1px] border-black flex justify-between absolute">
           <div className="flex">
             <img
               src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
@@ -219,31 +225,39 @@ const Chats = () => {
             <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
           </div>
           <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
-        </div>
-        <div className="bg-white flex h-[105%] flex-col ">
-          
+        </div>}
+        <div className="bg-chatBG flex h-[100%] flex-col rounded-lg">
+        {!userSelected &&<span className="h-32 w-64 lg:w-[350px] z-0  bg-hero bg-contain bg-no-repeat bg-center absolute top-60 lg:top-[47%] ml-[24%] fading" />}
+
           <div
             ref={chatContainerRef}
-            className="m-3 rounded-xl md:h-[75%]  p-2 overflow-y-auto chat-area no-scrollbar"
+            className=" mt-12 m-3 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
             {/* Messages */}
             {chats && Object.entries(chats).reverse().map(([id, data]) =>
                   (data.senderId === user_1) ? 
-                  (<SentMsg key={id} msg={data.message}/>) : 
-                  (<RecievedMsg key={id} msg={data.message}/>)
+                  (<SentMsg key={id} msg={data.message} time={"12:12"}/>): 
+                  (<RecievedMsg key={id} msg={data.message} time={"10:10"}/>)
                 )}
           </div>
 
-          <div className="bg-[#00000000] h-1/6  flex justify-center">
-            {spectatorMode ? <div>You can't send message in spectator mode</div>:<input
+          {userSelected && <div className="mb-2 px-3  flex justify-center">
+            {spectatorMode ? <input
+              id="messageInput"
+              type="text"
+              readOnly
+              className="w-[95%] h-[35px] rounded-lg p-4 text-center text-sm border-[1px] border-black"
+              placeholder="You can't send any message in spectator mode"
+            />:
+            <input
               id="messageInput"
               type="text"
               className="w-[95%] h-[35px] rounded-lg p-4 text-sm border-[1px] border-black"
               placeholder="Message"
             />}
-            <div className="flex justify-center items-center bg-gray-600 w-[35px] h-[35px]  ml-4 rounded-full" 
-            onClick={sendMsg}></div>
-          </div>
+            {!spectatorMode && <div className="flex justify-center items-center bg-gray-600 w-[35px] h-[35px]  ml-4 rounded-full" 
+            onClick={sendMsg}></div>}
+          </div>}
         </div>
       </div>
     </div>

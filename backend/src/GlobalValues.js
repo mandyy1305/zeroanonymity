@@ -16,3 +16,8 @@ export async function setUser_2(str){
     user_2=str;
 }
 
+export var userSelected = false
+export function setUserSelected(bool){
+    userSelected=bool;
+}
+

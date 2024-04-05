@@ -53,14 +53,18 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
     setFilteredArray(chatCardList.filter(item => item.includes(searchQuery)));
   }, [searchQuery])
   
-
+  // if(chatCardList){
+  //   console.log("not empty")
+  // }else{
+  //   console.log("empty")
+  // }
   return (
-    <div className="bg-white rounded-t-lg w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col gap-1 overflow-auto no-scrollbar shadow-black shadow-2xl">
+    <div className="bg-white rounded-t-xl  w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col gap-1 overflow-auto no-scrollbar shadow-gray-900 shadow-2xl h-[105%]">
       <p className="text-black align-middle text-center  text-2xl mt-3 font-semibold">Recent Chats</p>
         <div className=" flex justify-evenly gap-1 px-1 mt-6">
-          <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-2/3 rounded-xl pl-2" placeholder="Search"
+          { <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-2/3 rounded-xl pl-2" placeholder="Search"
           onChange={(e)=>setSearchQuery(e.target.value)}
-          />
+          />}
           <button className="bg-[#006ea7] h-12 w-1/3 rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+Start a new chat</button>
           {/* {console.log(serachPanelVisiblity)} */}
         </div>
