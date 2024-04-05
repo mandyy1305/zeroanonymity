@@ -20,18 +20,16 @@ const ProfileDropdown = () => {
         </div>
       </div>
       {isProfileDropdownOpen && (
-        <div className="  w-60 px-6 py-5  absolute z-50 top-14 lg:right-10 right-2 bg-white shadow-sm flex flex-col gap-3  rounded-3xl">
-          <span className="drop text-xs">You are logged in as</span>
-          <div className="drop flex items-center justify-center gap-4">
+        <div className="  w-60 px-6 py-5  absolute z-50 top-14 lg:right-10 right-2 bg-white shadow-sm flex flex-col gap-5  rounded-3xl">
+          <div className="drop flex flex-col items-center justify-center">
             <img
               src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
               alt="I"
-              className="drop rounded-full h-8"
+              className="drop rounded-full h-14"
             />
-            <span className="font-semibold text-md ">GigaNiga365</span>
+            <span className="font-semibold text-md">GigaNiga365</span>
           </div>
-          <hr />
-          <button className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] ">
+          <button className="drop border-[2px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] ">
             Logout
           </button>
         </div>
