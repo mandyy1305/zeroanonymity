@@ -47,6 +47,9 @@ const Chats = () => {
         setMoreChatsAvailable(false)
         //TODO: ADD A DIV SAYING NO MORE CHATS TO LOAD
       }
+      else{
+        setMoreChatsAvailable(true)
+      }
       setChats(prevState => ({...prevState,...formattedData}));
       setLoadingMoreChats(false); 
       //TODO: REMOVE THE LOADING SCREEN
