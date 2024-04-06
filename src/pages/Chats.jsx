@@ -20,6 +20,7 @@ const Chats = () => {
   const[chatList,setChatList]=useState(null);
   const [selectedUser, setSelectedUser] = useState("")
   const [currentUser, setCurrentUser] = useState(user_1)
+  //const [user_1_Changed, setUser_1_Changed] = useState("");
 
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [previousScrollHeight, setPreviousScrollHeight]  = useState(null)
@@ -110,6 +111,24 @@ const Chats = () => {
 
 
   //#region ----USEEFFECT - SNAPSHOT LISTENERS----
+ 
+  useEffect(() => {
+    const checkVariable = () => {
+      if (user_1 === "") {
+        console.log("running")
+        console.log(user_1)
+        setTimeout(checkVariable, 100);
+      }
+      else{
+        setCurrentUser(user_1)
+      }
+    };
+
+    checkVariable();
+    return () => {
+      clearTimeout(checkVariable);
+    };
+  }, []);
 
   // This useeffect is called whenever the user clicks on chameleon mode
   useEffect(()=>{
@@ -119,13 +138,16 @@ const Chats = () => {
   // This useeffect is called at the start of the page load and on chameleon mode
   // This listener is for the chatcards ordering
   useEffect(() => {
-    const unsubscribe = getChatListListener(user_1, (snapshotArray) => {
-      setChatList(snapshotArray)
-    });
-    return () => {
-      console.log("Bye Bye See You Later")
-      unsubscribe();
-    };
+      if(user_1 !== ""){
+        console.log("I am here")
+      const unsubscribe = getChatListListener(user_1, (snapshotArray) => {
+        setChatList(snapshotArray)
+      });
+      return () => {
+        console.log("Bye Bye See You Later")
+        unsubscribe();
+      };
+   }
   }, [currentUser])
   
   //this useeffect is called every time the user clicks on a chat card
@@ -175,7 +197,7 @@ const Chats = () => {
   useEffect(() => {
     const container = chatContainerRef.current;
 
-    if (container) {
+    if (container && chats !== null) {
 
       // Load more chats if the chats displayed do not completely fill the scrollable view
       if(container.scrollHeight <= container.clientHeight){

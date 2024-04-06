@@ -31,6 +31,9 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
     }
   }
 
+  useEffect(()=>{
+    addNewChatControls.set({scaleY:0, originY: 0});
+  }, [])
 
   useEffect(()=>{
     if(serachPanelVisiblity){

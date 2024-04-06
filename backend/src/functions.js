@@ -100,6 +100,7 @@ export const login = async (user_id) => {
                 chatList: []
             });
             setSpectatorMode(false)
+            setUser_1(user_id)
         }
         
     }
@@ -326,6 +327,7 @@ export const getChatListListener = (user_1, callback) => {
             ->THIS SECTION JUST ADDS A LISTENER TO THE CHAT LIST AND 
                 UPDATES EVERY TIME THERE IS A NEW MESSAGE FROM ANYONE
         */
+       console.log("User user", user_1)
         const docRef = doc(db, 'users', user_1);
         const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
             if(docSnapshot.exists()){
