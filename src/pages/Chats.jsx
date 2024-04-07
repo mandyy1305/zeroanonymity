@@ -7,7 +7,7 @@ import UserList from "../components/UserList";
 import MessageRef from "./messages.json";
 import { string } from "prop-types";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp } from "../../backend/src/functions";
-import { serverTimestamp } from "firebase/firestore";
+import { Timestamp, serverTimestamp } from "firebase/firestore";
 import { spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
 import { motion, useAnimation } from "framer-motion";
@@ -20,7 +20,6 @@ const Chats = () => {
   const[chatList,setChatList]=useState(null);
   const [selectedUser, setSelectedUser] = useState("")
   const [currentUser, setCurrentUser] = useState(user_1)
-  //const [user_1_Changed, setUser_1_Changed] = useState("");
 
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [previousScrollHeight, setPreviousScrollHeight]  = useState(null)
@@ -238,7 +237,7 @@ const Chats = () => {
   return (
 
     <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
-      {chatList !== null &&<UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
+      {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
         {userSelected && <div className="bg-white h-[50px] w-[69.6%] items-center pl-4  border-b-[1px] border-black flex justify-between absolute">
           <div className="flex">
@@ -258,14 +257,21 @@ const Chats = () => {
             ref={chatContainerRef}
             className=" mt-12 m-3 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
+            <p>Loading</p>
             {/* Messages */}
             {chats && Object.entries(chats).reverse().map(([id, data]) =>
-                  (data.senderId === user_1) ? 
-                  (<SentMsg key={id} msg={data.message} time={"12:12"}/>): 
-                  (<RecievedMsg key={id} msg={data.message} time={"10:10"}/>)
-                )}
+                {
+                  const time = (new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds)).toDate()
+                  const hours = time.getHours().toString().padStart(2, '0');
+                  const minutes = time.getMinutes().toString().padStart(2, '0');
+                  const timeString = hours + ":" + minutes
+                  return(
+                    (data.senderId === user_1) ? 
+                    (<SentMsg key={id} msg={data.message} time={timeString}/>): 
+                    (<RecievedMsg key={id} msg={data.message} time={timeString}/>)
+              )}
+            )}
           </div>
-
           {userSelected && <div className="mb-2 px-3  flex justify-center">
             {spectatorMode ? <input
               id="messageInput"
