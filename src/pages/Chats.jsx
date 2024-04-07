@@ -118,6 +118,7 @@ const Chats = () => {
         console.log(user_1)
         setTimeout(checkVariable, 100);
       }
+      
       else{
         setCurrentUser(user_1)
       }
