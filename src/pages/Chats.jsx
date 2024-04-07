@@ -26,6 +26,7 @@ const Chats = () => {
   const [loadingMoreChats, setLoadingMoreChats] = useState(false);
   const [moreChatsAvailable, setMoreChatsAvailable] = useState(true);
   const chatContainerRef = useRef();
+  const regex = /^[a-z_]*$/;
   //#endregion
 
 

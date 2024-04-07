@@ -13,6 +13,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
   const [newUsername, setNewUsername] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredArray, setFilteredArray] = useState(null);
+  const regex = /^[a-z_]*$/;
   // const [chatStatus,setChatStatus] = useState(false);
   const addNewChatControls = useAnimation()
   const chatCardControls = useAnimation()
@@ -61,6 +62,16 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
   }else{
     var chatExist = true;
   }
+  // useEffect(()=>{
+  //   if(regex.test(document.getElementById("newChatUsername").value))
+  // {
+  //   console.log("allowed username")
+  // }else{
+  //   console.log("username not allowed")
+  // }
+  // },[])
+  
+
   return (
     <div className="bg-white rounded-t-xl  w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col gap-1 overflow-auto no-scrollbar shadow-gray-900 shadow-2xl h-[105%]">
       {chatExist && <p className="text-black align-middle text-center  text-2xl mt-3 font-semibold">Recent Chats</p>}
@@ -68,7 +79,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
         {!chatExist && <p className="text-lg mx-auto font-semibold ">Find a chat to get started</p>}
         <div className={"flex justify-evenly gap-1 px-1 "}>
           {chatExist && <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-2/3 rounded-xl pl-2" placeholder="Search"
-          onChange={(e)=>setSearchQuery(e.target.value)}
+          onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
           />}
 
           {chatExist ? <button className="bg-[#006ea7] h-12 w-1/3 rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+ Start new chat</button> : <button className="bg-white h-[44px] w-1/3 rounded-xl border-[2px] border-slate-400 font-semibold text-blue-700 mt-2" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+Add new chat</button>}
