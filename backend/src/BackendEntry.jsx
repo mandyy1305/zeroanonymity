@@ -5,6 +5,7 @@ import "./functions"
 import { stopHeartbeat } from "./HeartBeatSignal";
 import { serverTimestamp } from "firebase/firestore";
 import { spectatorMode } from "./GlobalValues";
+import PulseLoader from "react-spinners/PulseLoader";
 
 
 export default function BackendEntry(){
@@ -24,6 +25,9 @@ export default function BackendEntry(){
   const [subscribedUser, setSubscribedUser] = useState('');
 
   const [isSpectatorMode, setIsSpectatorMode] = useState(spectatorMode);
+
+  let [loading, setLoading] = useState(true);
+  let [color, setColor] = useState("#ffffff");
 
   function handleClick() {
     login(UID)
@@ -48,9 +52,15 @@ export default function BackendEntry(){
 const handleClickk = async () => {
   setSubscribedUser(user_2)  
 }
-
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
   return (
     <div>
+      <PulseLoader color="red" size={10}/>
+      <br />
       <input className="border-[2px] border-black" type="text" onChange={(e)=>setUID(e.target.value)}/>
       <br />
       <button onClick={handleClick}>login</button>

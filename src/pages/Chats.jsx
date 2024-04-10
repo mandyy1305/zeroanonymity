@@ -8,6 +8,7 @@ import { Timestamp, serverTimestamp } from "firebase/firestore";
 import { spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
 import { FlatTree, motion, useAnimation } from "framer-motion";
+import PulseLoader from "react-spinners/PulseLoader";
 //#endregion
 
 const Chats = () => {
@@ -272,7 +273,9 @@ const Chats = () => {
             ref={chatContainerRef}
             className=" mt-12 m-3 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
-            {getChatAvailability(user_2) && <p>Loading</p>}
+            
+            {getChatAvailability(user_2) && 
+            <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:"60px"}}><PulseLoader size={10}/></div>}
             {/* Messages */}
             {chats && Object.entries(chats).reverse().map(([id, data]) =>
                 {
