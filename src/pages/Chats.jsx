@@ -2,35 +2,52 @@
 import React, { useEffect, useRef, useState } from "react";
 import RecievedMsg from "../components/RecievedMsg";
 import SentMsg from "../components/SentMsg";
-import UserlistItem from "../components/UserlistItem";
 import UserList from "../components/UserList";
-import MessageRef from "./messages.json";
-import { string } from "prop-types";
-import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp } from "../../backend/src/functions";
+import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp, getSessionStorage } from "../../backend/src/functions";
 import { Timestamp, serverTimestamp } from "firebase/firestore";
 import { spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
-import { motion, useAnimation } from "framer-motion";
+import { FlatTree, motion, useAnimation } from "framer-motion";
 //#endregion
 
 const Chats = () => {
 
   //#region ----USESTATE VARIABLES----
   const[chats,setChats]=useState(null);
+  const[sendingChats, setSendingChats] = useState(new Map());
+
   const[chatList,setChatList]=useState(null);
-  const [selectedUser, setSelectedUser] = useState("")
+  const [selectedUser,  setSelectedUser] = useState("")
   const [currentUser, setCurrentUser] = useState(user_1)
 
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [previousScrollHeight, setPreviousScrollHeight]  = useState(null)
   const [loadingMoreChats, setLoadingMoreChats] = useState(false);
-  const [moreChatsAvailable, setMoreChatsAvailable] = useState(true);
   const chatContainerRef = useRef();
   const regex = /^[a-z_]*$/;
+
+  
   //#endregion
 
 
   //#region ----FUNCTIONS----
+
+      //#region ---- More Chats Available----
+  const getChatAvailability = (user_2) =>{
+    const storedArray = JSON.parse(sessionStorage.getItem('MoreChatsAvailable'));
+    return (storedArray && storedArray.includes(user_2)) ? true : false;
+  }
+
+  const deleteChatAvailability = (user_2) => {
+    let storedArray = JSON.parse(sessionStorage.getItem('MoreChatsAvailable'));
+
+    const indexToDelete = storedArray.indexOf(user_2);
+    if (indexToDelete !== -1) {
+      storedArray.splice(indexToDelete, 1);
+      sessionStorage.setItem('MoreChatsAvailable', JSON.stringify(storedArray));
+    } 
+  }
+  //#endregion
 
       //#region ----LOAD MORE CHATS----
   const loadMoreChats = async () => {
@@ -39,22 +56,28 @@ const Chats = () => {
         ->GETS THE TIMESTAMP OF THE EARLIEST MESSAGE IN SESSION STORAGE 
         ->RETREIVES FEW MORE DOCS FROM THE DB 
     */
-    setLoadingMoreChats(true);
-    //TODO: ADD A LOADING SCREEN
-    //TODO: Check for null value in getEarliestChatTimestamp
-    const timeStamp = await getEarliestChatTimestamp(user_1, user_2)
-    await getChatsBeforeTimestamp(user_1, user_2, timeStamp, (formattedData) => {
-      if(Object.keys(formattedData).length === 0){
-        setMoreChatsAvailable(false)
-        //TODO: ADD A DIV SAYING NO MORE CHATS TO LOAD
-      }
-      else{
-        setMoreChatsAvailable(true)
-      }
-      setChats(prevState => ({...prevState,...formattedData}));
-      setLoadingMoreChats(false); 
-      //TODO: REMOVE THE LOADING SCREEN
-    })
+    
+    const data =  getSessionStorage(user_1+"+"+user_2);
+    if(Object.keys(data).length !== 0){
+
+      setLoadingMoreChats(true);
+      //TODO: ADD A LOADING SCREEN
+      //TODO: Check for null value in getEarliestChatTimestamp
+    
+      const timeStamp = await getEarliestChatTimestamp(user_1, user_2)
+      await getChatsBeforeTimestamp(user_1, user_2, timeStamp, (formattedData) => {
+        if(Object.keys(formattedData).length === 0){
+          deleteChatAvailability(user_2)
+        }
+        setChats(prevState => ({...prevState,...formattedData}));
+        setLoadingMoreChats(false); 
+        //TODO: REMOVE THE LOADING SCREEN
+      })
+    }
+    else{
+      deleteChatAvailability(user_2)
+    }
+    
   } 
   //#endregion
   
@@ -63,7 +86,6 @@ const Chats = () => {
     /*
         -> CHECKS WHEN THE USER HAS SCROLLED TO TOP
     */
-
     const container = chatContainerRef.current;      
     
     if (container) {
@@ -75,8 +97,9 @@ const Chats = () => {
       //2. CURRENTLY NO CHATS ARE BEING LOADED
       //3. THE TOTAL NUMBER OF CHATS EXCEED THE SCROLL VIEW
       //4. THERE ARE CHATS AVAILABLE IN THE DB
-      if (container.scrollTop === 0 && !loadingMoreChats && container.scrollHeight > container.clientHeight
-         && moreChatsAvailable) {
+      console.log(container.scrollTop === 0 , !loadingMoreChats , container.scrollHeight > container.clientHeight
+      , getChatAvailability(selectedUser), selectedUser, user_2)
+      if (container.scrollTop === 0 && !loadingMoreChats && container.scrollHeight > container.clientHeight && getChatAvailability(user_2)) {
           setPreviousScrollHeight( container.scrollHeight );
           await loadMoreChats()
         }
@@ -86,24 +109,22 @@ const Chats = () => {
   //#endregion
   
   // #region ----SEND MESSAGE-----
-  const sendMsg = (msgSnapshot) => {
+  const sendMsg = () => {
     const msgText = document.getElementById("messageInput").value;
     if(msgText!=""){
-    document.getElementById("messageInput").value = '';
-    const newID = new Date().toISOString() + '+' +user_1
-    const createdAt = serverTimestamp()
-    const newEntry = {
-      [newID]: { // Use a unique key for the new entry
-        "senderId": user_1,
-        "message": msgText,
-        "createdAt": createdAt
-      }
-    };
+      document.getElementById("messageInput").value = '';
+      const newID = new Date().toISOString() + '+' +user_1
+      
+      const createdAt = serverTimestamp()
+      const newEntry = {
+          "senderId": user_1,
+          "message": msgText,
+          "createdAt": createdAt
+      };
 
-    sendChat(user_1, user_2, msgText, newID, createdAt);
-    // Update state
-    setChats({...newEntry ,...chats});
-  }
+      sendChat(user_1, user_2, msgText, newID, createdAt);
+      setSendingChats(prevSendingChats => new Map(prevSendingChats.set(newID, newEntry)));
+    }
   };
   //#endregion
 
@@ -112,11 +133,12 @@ const Chats = () => {
 
   //#region ----USEEFFECT - SNAPSHOT LISTENERS----
  
+  // This runs only once and keeps calling itself unless user_2 is not mentioned
   useEffect(() => {
+    // Prevents user_1 to be empty by any chance
     const checkVariable = () => {
       if (user_1 === "") {
         console.log("running")
-        console.log(user_1)
         setTimeout(checkVariable, 100);
       }
       
@@ -131,21 +153,22 @@ const Chats = () => {
     };
   }, []);
 
-  // This useeffect is called whenever the user clicks on chameleon mode
-  useEffect(()=>{
-    setChats(null);
-  }, [currentUser])
-  
   // This useeffect is called at the start of the page load and on chameleon mode
   // This listener is for the chatcards ordering
   useEffect(() => {
-      if(user_1 !== ""){
-        console.log("I am here")
+
+    setChats(null);
+    setSendingChats(new Map())
+
+    if(user_1 !== ""){
       const unsubscribe = getChatListListener(user_1, (snapshotArray) => {
-        setChatList(snapshotArray)
-      });
+        setChatList(snapshotArray)  
+        
+        //Setting the chat list to session storage
+        sessionStorage.setItem('MoreChatsAvailable', JSON.stringify(snapshotArray))
+      });      
+
       return () => {
-        console.log("Bye Bye See You Later")
         unsubscribe();
       };
    }
@@ -154,8 +177,8 @@ const Chats = () => {
   //this useeffect is called every time the user clicks on a chat card
   // this listener is for when the user clicks on a chat card and listens for new chats
   useEffect(() => {
+    console.log("User changed", selectedUser)
     let unsubscribeFunction;
-    
     const fetchData = async () => {
       
       // To get chats from DB or Session Storage when a chat card is first clicked
@@ -164,30 +187,21 @@ const Chats = () => {
       })
 
       // Adds a onSnapShot Listener to listen to new messages
-      unsubscribeFunction = await getChatsListener(user_1, selectedUser, (formattedData) => {
+      unsubscribeFunction = await getChatsListener(user_1, user_2, (formattedData) => {
         setChats(prevState => ({...formattedData, ...prevState}));
       });
     };
 
-    if(user_1 !== "" && selectedUser !== ""){
+    if(user_1 !== "" && user_2 !== ""){
       fetchData();
       // Sets multiple variables to default values when a new chat card is clicked
       setUserScrolledUp(false)
       setLoadingMoreChats(false)
-      setMoreChatsAvailable(true)
     }
-
-    // if(chatList.length){
-    //   console.log("empty")
-    // }else{
-    //   console.log("not empty")
-    // }
-  
 
     // Cleanup function to unsubscribe when component unmounts
     return () => {
         if (unsubscribeFunction) {
-          setChats(null)
           unsubscribeFunction();
         }
     };
@@ -199,9 +213,8 @@ const Chats = () => {
     const container = chatContainerRef.current;
 
     if (container && chats !== null) {
-
       // Load more chats if the chats displayed do not completely fill the scrollable view
-      if(container.scrollHeight <= container.clientHeight){
+      if(container.scrollHeight <= container.clientHeight && getChatAvailability(user_2)){
         const loadMoreChatsAsync = async () => {await loadMoreChats()}
         loadMoreChatsAsync()
       }
@@ -219,13 +232,13 @@ const Chats = () => {
         container.scrollTop = container.scrollHeight;
       }
     }
-  }, [chats]);
+  }, [chats, sendingChats]);
   
   // This useeffect adds a scroll listener to the scrollable view
   // The listner handles loading chats when user scrolls to the top
   useEffect(() => {
     const container = chatContainerRef.current;
-    container.addEventListener('scroll', handleScroll);
+    container.addEventListener('scroll',  handleScroll);
 
     return () => {
       container.removeEventListener('scroll', handleScroll);
@@ -259,20 +272,39 @@ const Chats = () => {
             ref={chatContainerRef}
             className=" mt-12 m-3 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
-            <p>Loading</p>
+            {getChatAvailability(user_2) && <p>Loading</p>}
             {/* Messages */}
             {chats && Object.entries(chats).reverse().map(([id, data]) =>
                 {
-                  const time = (new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds)).toDate()
-                  const hours = time.getHours().toString().padStart(2, '0');
-                  const minutes = time.getMinutes().toString().padStart(2, '0');
-                  const timeString = hours + ":" + minutes
-                  return(
-                    (data.senderId === user_1) ? 
-                    (<SentMsg key={id} msg={data.message} time={timeString}/>): 
-                    (<RecievedMsg key={id} msg={data.message} time={timeString}/>)
-              )}
-            )}
+                    
+                    const time = (new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds)).toDate()
+                    const hours = time.getHours().toString().padStart(2, '0');
+                    const minutes = time.getMinutes().toString().padStart(2, '0');
+                    const timeString = hours + ":" + minutes
+                    
+                    if(data.senderId === user_1){
+                      if(sendingChats.has(id)){
+                        const tempMap = sendingChats;
+                        tempMap.delete(id);
+                        setSendingChats(tempMap);
+                      }
+                      return (<SentMsg key={id} msg={data.message} time={timeString} sent={true}/>)
+                    }
+                    else{
+                      return (<RecievedMsg key={id} msg={data.message} time={timeString}/>)
+                    }
+                })
+            }
+            {sendingChats.size !== 0 && Array.from(sendingChats.entries()).map(([id, data]) => 
+              {
+                const time = new Date() 
+                const hours = time.getHours().toString().padStart(2, '0');
+                const minutes = time.getMinutes().toString().padStart(2, '0');
+                const timeString = hours + ":" + minutes
+                return(<SentMsg key={id} msg={data.message} time={timeString} sent={false} /> );
+              })
+            }
+
           </div>
           {userSelected && <div className="mb-2 px-3  flex justify-center">
             {spectatorMode ? <input

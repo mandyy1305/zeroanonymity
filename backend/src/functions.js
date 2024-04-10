@@ -16,9 +16,9 @@ const chatIdOrder = async (user_1, user_2) =>{
     }
     return user_1 + '+' + user_2;
 }
-
+//TODO: infinity running on reload
 // Function to get data from session storage
-const getSessionStorage = (key) => {
+export const getSessionStorage = (key) => {
     try {
       const data = sessionStorage.getItem(key);
       return data ? JSON.parse(data) : null;
@@ -229,7 +229,7 @@ export const getEarliestChatTimestamp = async (user_1, user_2) => {
     const chatId = user_1+'+'+user_2
     const chats = getSessionStorage(chatId);
     const lastKey = Object.keys(chats).pop(); // Get the last property name
-    const lastValue = chats[lastKey]; 
+    const lastValue = chats[lastKey];
     return lastValue.createdAt
 }
 
@@ -240,6 +240,7 @@ export const getChatsBeforeTimestamp = async (user_1, user_2, timeStampJSON, cal
             -> RETRIEVES ALL THE DOCUMENTS OF A COLLECTION AFTER THE GIVEN TIMESTAMP
             -> CALLED WHENEVER THERE A CHAT CARD IS CLICKED TO FETCH NEW CHATS FROM THE DB IF ANY
         */
+       
         const   timeStamp = new Timestamp(timeStampJSON.seconds, timeStampJSON.nanoseconds)
         const chatCollection = collection(db, 'chats', await chatIdOrder(user_1, user_2), 'messages');
         const q = query(chatCollection, orderBy('createdAt', 'desc'),where('createdAt', '<', timeStamp), limit(5));
@@ -365,7 +366,7 @@ export const getChatsListener = async (user_1, user_2, callback) => {
             ->IF YES, IT RETRIEVES DOCUMENTS (CHATS) CREATED AFTER THE LATEST CHAT STORED IN SESSION STORAGE 
         */
         const storedChats = getSessionStorage(user_1+'+'+user_2);
-        if (storedChats) {
+        if (storedChats && Object.keys(storedChats).length !== 0 ) {
             const latestChatKey = Object.keys(storedChats)[0]
             const lastTimestamp = storedChats[latestChatKey].createdAt
             const formattedData = await getChatsAfterTimestamp(user_1, user_2, lastTimestamp);

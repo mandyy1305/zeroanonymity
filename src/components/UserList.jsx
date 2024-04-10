@@ -62,14 +62,6 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
   }else{
     var chatExist = true;
   }
-  // useEffect(()=>{
-  //   if(regex.test(document.getElementById("newChatUsername").value))
-  // {
-  //   console.log("allowed username")
-  // }else{
-  //   console.log("username not allowed")
-  // }
-  // },[])
   
 
   return (
@@ -82,7 +74,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
           onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
           />}
 
-          {chatExist ? <button className="bg-[#006ea7] h-12 w-1/3 rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+ Start new chat</button> : <button className="bg-white h-[44px] w-1/3 rounded-xl border-[2px] border-slate-400 font-semibold text-blue-700 mt-2" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+Add new chat</button>}
+          {chatExist ? <button className="bg-[#006ea7] h-12 w-1/3 rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+ Start new chat</button> : <button className="bg-white h-[44px] w-1/3 rounded-xl border-[2px] border-slate-400 font-semibold text-blue-700 mt-2" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity);}}>+Add new chat</button>}
           {/* {console.log(serachPanelVisiblity)} */}
         </div>
         </div>
@@ -98,7 +90,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc}) => {
             onChange={(e)=>setNewUsername(e.target.value)}
           />
           <button className="bg-[#00000000] border-[2px] border-blue-800 w-1/3 h-12 rounded-lg mx-auto" 
-            onClick={checkChatExistence}
+            onClick={() => {checkChatExistence(); setSearchPanelVisiblity(!serachPanelVisiblity)}}
           >Begin Chat</button>
         </motion.div>
         
