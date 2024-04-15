@@ -21,3 +21,8 @@ export function setUserSelected(bool){
     userSelected=bool;
 }
 
+export var chameleon = false
+export function setChameleon(bool){
+    chameleon=bool;
+    
+}

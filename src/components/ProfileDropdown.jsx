@@ -1,6 +1,7 @@
 import { motion, useAnimation } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { user_1 } from "../../backend/src/GlobalValues";
 
 
 const ProfileDropdown = () => {
@@ -39,7 +40,7 @@ const ProfileDropdown = () => {
           className=" bg-white rounded-3xl h-10 w-[4.25rem]  flex justify-center items-center gap-3 "
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
         >
-            {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-md opacity-0">GigaNiga365</motion.span>}
+            {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-md opacity-0">{user_1}</motion.span>}
             {isProfileDropdownOpen && <motion.button animate={logoutControls} className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] opacity-0">
               Logout
             </motion.button>}

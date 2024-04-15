@@ -5,7 +5,7 @@ import SentMsg from "../components/SentMsg";
 import UserList from "../components/UserList";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp, getSessionStorage } from "../../backend/src/functions";
 import { Timestamp, serverTimestamp } from "firebase/firestore";
-import { spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
+import { chameleon, spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
 import { FlatTree, motion, useAnimation } from "framer-motion";
 import PulseLoader from "react-spinners/PulseLoader";
@@ -255,7 +255,7 @@ const Chats = () => {
     <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
       {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
-        {userSelected && <div className="bg-white h-[50px] w-[69.6%] items-center pl-4  border-b-[1px] border-black flex justify-between absolute">
+        {userSelected && chameleon && <div className=" bg-white h-[50px]  w-[69.6%] items-center pl-4  border-b-[1px] rounded-t-lg border-black flex justify-between absolute">
           <div className="flex">
             <img
               src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
@@ -266,8 +266,8 @@ const Chats = () => {
           </div>
           <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
         </div>}
-        <div className="bg-chatBG flex h-[100%] flex-col rounded-lg">
-        {!userSelected &&<span className="h-32 w-64 lg:w-[350px] z-0  bg-hero bg-contain bg-no-repeat bg-center absolute top-60 lg:top-[47%] ml-[24%] fading" />}
+        <div className="bg-chatBG flex h-[104%] flex-col rounded-lg">
+        {!userSelected && !chameleon &&<span className="h-32 w-64 lg:w-[350px] z-0  bg-hero bg-contain bg-no-repeat bg-center absolute top-60 lg:top-[47%] ml-[24%] fading" />}
 
           <div
             ref={chatContainerRef}
@@ -309,7 +309,7 @@ const Chats = () => {
             }
 
           </div>
-          {userSelected && <div className="mb-2 px-3  flex justify-center">
+          {userSelected && chameleon && <div className="mb-2 px-3  flex justify-center">
             {spectatorMode ? <input
               id="messageInput"
               type="text"

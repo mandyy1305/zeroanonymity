@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="flex flex-col w-screen h-screen  mx-auto bg-yellow-100">
-      <nav className="  flex items-center justify-between h-16 lg:mx-12">
+      <nav className="  flex items-center justify-between mt-2 h-[45px] lg:mx-12">
         <div>
           <IoMenu
             className="lg:hidden "
