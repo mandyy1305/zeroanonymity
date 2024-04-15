@@ -98,3 +98,12 @@ hr {
   -ms-user-select: none;
   user-select: none;
 }
+
+@font-face {
+  font-family: ultra;
+  src: url(./fonts/Pacifico-Regular.ttf);
+}
+
+.ultra{
+  font-family: ultra;
+}

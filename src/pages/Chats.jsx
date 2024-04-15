@@ -1,15 +1,18 @@
 //#region ----IMPORTS----
-import React, { useEffect, useRef, useState } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import RecievedMsg from "../components/RecievedMsg";
 import SentMsg from "../components/SentMsg";
 import UserList from "../components/UserList";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp, getSessionStorage } from "../../backend/src/functions";
 import { Timestamp, serverTimestamp } from "firebase/firestore";
-import { chameleon, spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
+
+import { chameleon,  setUserSelected, spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
 import { FlatTree, motion, useAnimation } from "framer-motion";
 import PulseLoader from "react-spinners/PulseLoader";
+import HeroText from "../components/HeroText";
 import DateCard from "../components/DateCard";
+
 //#endregion
 
 const Chats = () => {
@@ -21,18 +24,40 @@ const Chats = () => {
   const[chatList,setChatList]=useState(null);
   const [selectedUser,  setSelectedUser] = useState("")
   const [currentUser, setCurrentUser] = useState(user_1)
+  const [showAnim, setShowAnim] = useState(false)
+  const [chumma, setChumma] = useState(true)
 
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [previousScrollHeight, setPreviousScrollHeight]  = useState(null)
   const [loadingMoreChats, setLoadingMoreChats] = useState(false);
   const chatContainerRef = useRef();
   const regex = /^[a-z_]*$/;
-
   
   //#endregion
-
+  //TODO: chats loading everything everytime i click em
+  //TODO: chumma ka kuch kar
 
   //#region ----FUNCTIONS----
+      //#region ----ANIMATION----
+      // Start the animation
+    let animationTimeout;
+    const startAnimation = () => {
+      
+      animationTimeout = setTimeout(() => {
+        if(!getIsDataReceived()){
+          //startAnimation();
+          setChumma(!chumma)
+        }
+        else{
+          setShowAnim(false)
+          setTimeout(() => {
+            const container = chatContainerRef.current;
+            container.scrollTop = container.scrollHeight;
+          }, 1);
+        }
+      }, 600);
+    };
+    //#endregion
 
       //#region ---- More Chats Available----
   const getChatAvailability = (user_2) =>{
@@ -99,9 +124,9 @@ const Chats = () => {
       //2. CURRENTLY NO CHATS ARE BEING LOADED
       //3. THE TOTAL NUMBER OF CHATS EXCEED THE SCROLL VIEW
       //4. THERE ARE CHATS AVAILABLE IN THE DB
-      console.log(container.scrollTop === 0 , !loadingMoreChats , container.scrollHeight > container.clientHeight
-      , getChatAvailability(selectedUser), selectedUser, user_2)
-      if (container.scrollTop === 0 && !loadingMoreChats && container.scrollHeight > container.clientHeight && getChatAvailability(user_2)) {
+      console.log(container.scrollTop === 0 , !loadingMoreChats , container.scrollHeight >= container.clientHeight
+      , getChatAvailability(user_2), selectedUser, user_2)
+      if (container.scrollTop === 0 && !loadingMoreChats && container.scrollHeight >= container.clientHeight && getChatAvailability(user_2)) {
           setPreviousScrollHeight( container.scrollHeight );
           await loadMoreChats()
         }
@@ -110,7 +135,7 @@ const Chats = () => {
   };
   //#endregion
   
-  // #region ----SEND MESSAGE-----
+      // #region ----SEND MESSAGE-----
   const sendMsg = () => {
     const msgText = document.getElementById("messageInput").value;
     if(msgText!=""){
@@ -130,13 +155,26 @@ const Chats = () => {
   };
   //#endregion
 
+      //#region ----SESSION STORAGE BOOLEAN - DATA RECEIVED FROM DB----
+  const getIsDataReceived = () => {return sessionStorage.getItem('DataReceived') === 'true';}
+  const setIsDataReceived = (value) => {sessionStorage.setItem('DataReceived', value);}
+
+  const getPrevDate = () => {return sessionStorage.getItem('PrevDate');}
+  const setPrevDate = (value) => {sessionStorage.setItem('PrevDate', value);}
+
+  const getPrevSender = () => {return sessionStorage.getItem('PrevSender');}
+  const setPrevSender = (value) => {sessionStorage.setItem('PrevSender', value);}
+
   //#endregion
+  //#endregion
+  
 
-
-  //#region ----USEEFFECT - SNAPSHOT LISTENERS----
  
+  //#region ----USEEFFECT - SNAPSHOT LISTENERS----
+
   // This runs only once and keeps calling itself unless user_2 is not mentioned
   useEffect(() => {
+    setIsDataReceived(false)
     // Prevents user_1 to be empty by any chance
     const checkVariable = () => {
       if (user_1 === "") {
@@ -176,18 +214,33 @@ const Chats = () => {
    }
   }, [currentUser])
   
+  useEffect(()=>{
+    if(userSelected){
+      //console.log("Changed")
+      startAnimation()
+    }
+  },[chumma])
+  
+    
   //this useeffect is called every time the user clicks on a chat card
   // this listener is for when the user clicks on a chat card and listens for new chats
   useEffect(() => {
-    console.log("User changed", selectedUser)
+    
     let unsubscribeFunction;
+    
     const fetchData = async () => {
-      
+      //start the fade loader animation
+      //startAnimation();
+
       // To get chats from DB or Session Storage when a chat card is first clicked
       await getChats(user_1, user_2, (formattedData) => {
+      
+        /*setTimeout(() => {
+        JUST FOR DEBUGGING
+        }, 3500);*/
+        setIsDataReceived(true)
         setChats(formattedData)
       })
-
       // Adds a onSnapShot Listener to listen to new messages
       unsubscribeFunction = await getChatsListener(user_1, user_2, (formattedData) => {
         setChats(prevState => ({...formattedData, ...prevState}));
@@ -195,7 +248,10 @@ const Chats = () => {
     };
 
     if(user_1 !== "" && user_2 !== ""){
+      setIsDataReceived(false)
+      setShowAnim(true)
       fetchData();
+      
       // Sets multiple variables to default values when a new chat card is clicked
       setUserScrolledUp(false)
       setLoadingMoreChats(false)
@@ -203,16 +259,20 @@ const Chats = () => {
 
     // Cleanup function to unsubscribe when component unmounts
     return () => {
+      clearTimeout(animationTimeout)
         if (unsubscribeFunction) {
           unsubscribeFunction();
         }
     };
   }, [selectedUser]);
 
+
   // This useeffect is called everytime there is a change in the chats array
   // This is to position the chats in correct order and place and also load more chats as necessary
   useEffect(() => {
     const container = chatContainerRef.current;
+    setPrevDate(null)
+    setPrevSender(null)
 
     if (container && chats !== null) {
       // Load more chats if the chats displayed do not completely fill the scrollable view
@@ -254,63 +314,147 @@ const Chats = () => {
   return (
 
     <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
-      {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser}/>}
+      {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser} startAnimation={startAnimation}/>}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
-        {userSelected && chameleon && <div className=" bg-white h-[50px]  w-[69.6%] items-center pl-4  border-b-[1px] rounded-t-lg border-black flex justify-between absolute">
-          <div className="flex">
-            <img
-              src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
-              alt="I"
-              className="rounded-full h-8 w-8"
-            />
-            <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
-          </div>
-          <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
-        </div>}
-        <div className="bg-chatBG flex h-[106%] flex-col rounded-lg">
-        {!userSelected && !chameleon &&<span className="h-32 w-64 lg:w-[350px] z-0  bg-hero bg-contain bg-no-repeat bg-center absolute top-60 lg:top-[47%] ml-[24%] fading" />}
 
+        <div className="bg-chatBG bg-cover flex h-[106%] flex-col rounded-lg relative">
+          
+          {showAnim &&
+            <div className="bg-chatBG bg-cover flex h-[100%] flex-col rounded-lg absolute z-50 w-full"></div>
+          }
+          {!showAnim && chameleon &&
+            <motion.div
+              initial={{opacity:0}}
+              animate={{opacity:1}}
+              className=" bg-white h-[50px]  w-full items-center pl-4  border-b-[1px] rounded-t-lg border-black flex justify-between absolute">
+              <div className="flex">
+                <img
+                  src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
+                  alt="I"
+                  className="rounded-full h-8 w-8"
+                />
+                <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
+              </div>
+              <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
+
+            </motion.div>
+          }
+        {console.log("CHumma is", chumma)}
+          {!chameleon &&
+            <HeroText text="Z e r o - A n o n y m i t y" />
+          }
+
+          {showAnim && (chumma) && 
+            <HeroText text="Z e r o - A n o n y m i t y" />
+          }
           <div
             ref={chatContainerRef}
-            className=" mt-12 m-3 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
+            className=" mt-12 m-3 mb-0 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
             {/* <DateCard day="Yesterday"/>  : day me pass kr dena jo bhi date pas krna hoga today,yestuday,mon,tue etc. */}
             {getChatAvailability(user_2) && 
             <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:"60px"}}><PulseLoader size={10}/></div>}
             {/* Messages */}
-            {chats && Object.entries(chats).reverse().map(([id, data]) =>
-                {
-                    
-                    const time = (new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds)).toDate()
-                    const hours = time.getHours().toString().padStart(2, '0');
-                    const minutes = time.getMinutes().toString().padStart(2, '0');
-                    const timeString = hours + ":" + minutes
-                    
-                    if(data.senderId === user_1){
-                      if(sendingChats.has(id)){
-                        const tempMap = sendingChats;
-                        tempMap.delete(id);
-                        setSendingChats(tempMap);
-                      }
-                      return (<SentMsg key={id} msg={data.message} time={timeString} sent={true}/>)
-                    }
-                    else{
-                      return (<RecievedMsg key={id} msg={data.message} time={timeString}/>)
-                    }
-                })
+            {console.log()}
+            {
+              chats && 
+              (Object.entries(chats).length === 0 
+              ?
+              <p>Hellooo</p>
+              :              
+              Object.entries(chats).reverse().map(([id, data]) =>
+              {
+                let dateComponent = null;
+                let brTag = null;
+                const time = (new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds)).toDate()
+                const hours = time.getHours().toString().padStart(2, '0');
+                const minutes = time.getMinutes().toString().padStart(2, '0');
+                const timeString = hours + ":" + minutes
+              
+                const formattedDate = `${time.getDate()} ${time.toLocaleString('en-US', { month: 'long' })} ${time.getFullYear()}`;
+                
+
+                
+                if(getPrevDate() !== formattedDate || getPrevDate() === "null"){
+                  dateComponent = <DateCard day={formattedDate}/>
+                  setPrevDate(formattedDate)
+                }
+
+                if(getPrevSender() === "null"){
+                  brTag = null
+                  setPrevSender(data.senderId)
+                }
+                else if(getPrevSender() !== data.senderId){
+                  brTag = <p style= {{height: "10px"}}/>
+                  setPrevSender(data.senderId)
+                }
+
+                if(data.senderId === user_1){
+                  if(sendingChats.has(id)){
+                    const tempMap = sendingChats;
+                    tempMap.delete(id);
+                    setSendingChats(tempMap);
+                  }
+                  return (
+                    <React.Fragment key={id}>
+                      {dateComponent || brTag}
+                      <SentMsg key={id} msg={data.message} time={timeString} sent={true}/>
+                    </React.Fragment>
+                  )
+                }
+                else{
+                  return (
+                    <React.Fragment key={id}>
+                      {dateComponent || brTag}
+                      <RecievedMsg key={id} msg={data.message} time={timeString}/>
+                    </React.Fragment>
+                  )
+                }
+              }))
             }
+            
             {sendingChats.size !== 0 && Array.from(sendingChats.entries()).map(([id, data]) => 
               {
+                let dateComponent = null;
+                let brTag = null;
                 const time = new Date() 
                 const hours = time.getHours().toString().padStart(2, '0');
                 const minutes = time.getMinutes().toString().padStart(2, '0');
                 const timeString = hours + ":" + minutes
-                return(<SentMsg key={id} msg={data.message} time={timeString} sent={false} /> );
+
+                const formattedDate = `${time.getDate()} ${time.toLocaleString('en-US', { month: 'long' })} ${time.getFullYear()}`;
+                
+                if(getPrevDate() !== formattedDate || getPrevDate() === "null"){
+                  dateComponent = <DateCard day={formattedDate}/>
+                  setPrevDate(formattedDate)
+                }
+
+                if(getPrevSender() === "null"){
+                  brTag = null
+                  setPrevSender(data.senderId)
+                }
+                else if(getPrevSender() !== data.senderId){
+                  brTag = <p style= {{height: "10px"}}/>
+                  setPrevSender(data.senderId)
+                }
+
+                return(
+                  <React.Fragment key={id}>
+                      {dateComponent || brTag}
+                      <SentMsg key={id} msg={data.message} time={timeString} sent={false} /> 
+                    </React.Fragment>
+                );
               })
             }
 
           </div>
-          {userSelected && chameleon && <div className=" rounded-b-lg px-3  flex justify-center items-end ">
+
+          {!showAnim && chameleon &&
+          <motion.div 
+          initial={{opacity:0}}
+          animate={{opacity:1}}
+          className="rounded-b-lg px-3 py-2  flex justify-center items-end ">
+
             {spectatorMode ? <input
               id="messageInput"
               type="text"
@@ -329,9 +473,9 @@ const Chats = () => {
                 }}
             />}
             {!spectatorMode && <span className="flex bg-sendBtn h-16 w-16 bg-contain bg-no-repeat bg-center " 
-            onClick={sendMsg}/>
-              }
-          </div>}
+            onClick={sendMsg}/>}
+          </motion.div>}
+
         </div>
       </div>
     </div>

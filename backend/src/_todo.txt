@@ -12,8 +12,15 @@ change panel of UsernameInUse from yes/no to only button of enter spectator mode
 logout button to be added
 
 add security - firebase keys visible from chrome
-
+shift+enter
 new message notif on screen when scrolled up
 
 TODO: your chats are not encrypted. not only us literally anyone can read whatever you send👍
 TODO: dont call data from db if the user selects the same selected user in chat card
+
+if logged in as chameleon with full access then logout before switching accounts
+
+show logged in only after logging in and not on main screen
+user is logged in if i create a new chat with them
+
+date not showing up in few cards
