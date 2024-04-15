@@ -13,6 +13,7 @@ export default {
         trailExtended: "url('./src/img/TrailExtended.svg')",
         trailExtended2: "url('./src/img/TrailExtended2.svg')",
         chatBG:"url('./src/img/chatBG.svg')",
+        sendBtn:"url('./src/img/SendButton.svg')"
       },
       boxShadow: {
         "3xl": "0px 5px rgba(0, 0, 0, 1)",

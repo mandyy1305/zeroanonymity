@@ -4,7 +4,7 @@ const SentMsg = (props) => {
 
     return (
         <div className=" my-1 flex justify-end " id={props.id} >
-            <span className="bg-white pt-1 rounded-t-xl rounded-bl-xl px-4  font-semibold align-middle max-w-[75%] h-auto text-left flex flex-col">
+            <span className="bg-white pt-1 rounded-t-xl rounded-bl-xl px-4  font-semibold align-middle max-w-[55%] h-auto text-left flex flex-col">
                 {props.msg}
                 <span className=" flex justify-end">
                     {/* replace time with timestamp of msg from firebase */}

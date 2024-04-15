@@ -9,6 +9,7 @@ import { chameleon, spectatorMode, userSelected, user_1, user_2 } from "../../ba
 import ChameleonMode from "../components/ChameleonMode";
 import { FlatTree, motion, useAnimation } from "framer-motion";
 import PulseLoader from "react-spinners/PulseLoader";
+import DateCard from "../components/DateCard";
 //#endregion
 
 const Chats = () => {
@@ -266,14 +267,14 @@ const Chats = () => {
           </div>
           <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
         </div>}
-        <div className="bg-chatBG flex h-[104%] flex-col rounded-lg">
+        <div className="bg-chatBG flex h-[106%] flex-col rounded-lg">
         {!userSelected && !chameleon &&<span className="h-32 w-64 lg:w-[350px] z-0  bg-hero bg-contain bg-no-repeat bg-center absolute top-60 lg:top-[47%] ml-[24%] fading" />}
 
           <div
             ref={chatContainerRef}
             className=" mt-12 m-3 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
-            
+            {/* <DateCard day="Yesterday"/>  : day me pass kr dena jo bhi date pas krna hoga today,yestuday,mon,tue etc. */}
             {getChatAvailability(user_2) && 
             <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:"60px"}}><PulseLoader size={10}/></div>}
             {/* Messages */}
@@ -309,7 +310,7 @@ const Chats = () => {
             }
 
           </div>
-          {userSelected && chameleon && <div className="mb-2 px-3  flex justify-center">
+          {userSelected && chameleon && <div className=" rounded-b-lg px-3  flex justify-center items-end ">
             {spectatorMode ? <input
               id="messageInput"
               type="text"
@@ -320,11 +321,16 @@ const Chats = () => {
             <input
               id="messageInput"
               type="text"
-              className="w-[95%] h-[35px] rounded-lg p-4 text-sm border-[1px] border-black"
+              className="w-[95%] h-[38px] max-h-[100px] rounded-lg p-4 text-sm border-[1px] border-black my-auto"
               placeholder="Message"
+              onKeyDown={(e) => {
+                if (e.key === "Enter")
+                    sendMsg();
+                }}
             />}
-            {!spectatorMode && <div className="flex justify-center items-center bg-gray-600 w-[35px] h-[35px]  ml-4 rounded-full" 
-            onClick={sendMsg}></div>}
+            {!spectatorMode && <span className="flex bg-sendBtn h-16 w-16 bg-contain bg-no-repeat bg-center " 
+            onClick={sendMsg}/>
+              }
           </div>}
         </div>
       </div>
