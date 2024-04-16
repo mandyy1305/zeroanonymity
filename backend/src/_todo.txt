@@ -22,5 +22,3 @@ if logged in as chameleon with full access then logout before switching accounts
 
 show logged in only after logging in and not on main screen
 user is logged in if i create a new chat with them
-
-date not showing up in few cards

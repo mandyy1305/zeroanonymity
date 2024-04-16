@@ -352,7 +352,7 @@ const Chats = () => {
             className=" mt-12 m-3 mb-0 rounded-xl md:h-[85%]  p-2 overflow-y-auto chat-area no-scrollbar"
           >
             {/* <DateCard day="Yesterday"/>  : day me pass kr dena jo bhi date pas krna hoga today,yestuday,mon,tue etc. */}
-            {getChatAvailability(user_2) && 
+            {getChatAvailability(user_2) && chatContainerRef.current.scrollHeight !== chatContainerRef.current.clientHeight &&
             <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:"60px"}}><PulseLoader size={10}/></div>}
             {/* Messages */}
             {console.log()}
@@ -362,7 +362,7 @@ const Chats = () => {
               ?
               <p>Hellooo</p>
               :              
-              Object.entries(chats).reverse().map(([id, data]) =>
+              Object.entries(chats).reverse().map(([id, data], index, array) =>
               {
                 let dateComponent = null;
                 let brTag = null;
@@ -374,8 +374,11 @@ const Chats = () => {
                 const formattedDate = `${time.getDate()} ${time.toLocaleString('en-US', { month: 'long' })} ${time.getFullYear()}`;
                 
 
-                
-                if(getPrevDate() !== formattedDate || getPrevDate() === "null"){
+                if(index === 0){
+                  dateComponent = <DateCard day={formattedDate} margin={"my-0"}/>
+                  setPrevDate(formattedDate)
+                }
+                else if(getPrevDate() !== formattedDate || getPrevDate() === "null"){
                   dateComponent = <DateCard day={formattedDate}/>
                   setPrevDate(formattedDate)
                 }
