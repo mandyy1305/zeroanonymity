@@ -22,3 +22,15 @@ if logged in as chameleon with full access then logout before switching accounts
 
 show logged in only after logging in and not on main screen
 user is logged in if i create a new chat with them
+
+need to add a div when no chats are present
+
+logout from everywhere when clicked on other buttons
+
+limit character length for username
+
+check for username validity inside userlist scroll view also
+
+cannot send on enter key press
+
+sendinngChats available on all messagees

@@ -13,6 +13,8 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
   const [newUsername, setNewUsername] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredArray, setFilteredArray] = useState(null);
+  const [reRender, setReRender] = useState(false)
+
   const[usernamePerm,setUsernamePerm]=useState(false);
   const regex = /^[a-z_]*$/;
   // const [chatStatus,setChatStatus] = useState(false);
@@ -42,6 +44,9 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
     addNewChatControls.set({scaleY:0, originY: 0});
   }, [])
 
+  useEffect(()=>{
+    console.log("Hello")
+  }, [setReRender])
 
   useEffect(()=>{
     if(serachPanelVisiblity){
@@ -185,7 +190,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
           { 
             (filteredArray !== null ? filteredArray : chatCardList).map((item) => {
               const username = item;
-              return <UserlistItem username={username} updateSelectedUserFunc = {updateSelectedUserFunc} startAnimation={startAnimation}/>;
+              return <UserlistItem username={username} updateSelectedUserFunc = {updateSelectedUserFunc} startAnimation={startAnimation} setReRender={setReRender} reRender={reRender}/>;
             })
           }
         </motion.div>

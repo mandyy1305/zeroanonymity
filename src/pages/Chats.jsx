@@ -32,6 +32,9 @@ const Chats = () => {
   const [loadingMoreChats, setLoadingMoreChats] = useState(false);
   const chatContainerRef = useRef();
   const regex = /^[a-z_]*$/;
+
+  const [textAreaMsg, setTextAreaMsg] = useState("")
+  const textAreaRef = useRef(null)
   
   //#endregion
   //TODO: chats loading everything everytime i click em
@@ -137,7 +140,12 @@ const Chats = () => {
   
       // #region ----SEND MESSAGE-----
   const sendMsg = () => {
-    const msgText = document.getElementById("messageInput").value;
+    //resizing the textarea box
+    textAreaRef.current.style.height = "auto"
+
+    const msgText = (document.getElementById("messageInput").value).trim();
+
+    console.log("finalmsg", msgText)
     if(msgText!=""){
       document.getElementById("messageInput").value = '';
       const newID = new Date().toISOString() + '+' +user_1
@@ -220,8 +228,14 @@ const Chats = () => {
       startAnimation()
     }
   },[chumma])
+
+  useEffect(()=>{
+    console.log(textAreaMsg)
+    textAreaRef.current.style.height = "auto"
+    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px"
+  }, [textAreaMsg])
   
-    
+
   //this useeffect is called every time the user clicks on a chat card
   // this listener is for when the user clicks on a chat card and listens for new chats
   useEffect(() => {
@@ -314,7 +328,7 @@ const Chats = () => {
   return (
 
     <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
-      {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser} startAnimation={startAnimation}/>}
+      {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser} startAnimation={startAnimation} />}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
 
         <div className="bg-chatBG bg-cover flex h-[106%] flex-col rounded-lg relative">
@@ -322,7 +336,10 @@ const Chats = () => {
           {showAnim &&
             <div className="bg-chatBG bg-cover flex h-[100%] flex-col rounded-lg absolute z-50 w-full"></div>
           }
-          {!showAnim && chameleon &&
+          {!chameleon &&
+            <div className="bg-chatBG bg-cover flex h-[100%] flex-col rounded-lg absolute z-50 w-full"></div>
+          }
+          {!showAnim && /*chameleon &&*/
             <motion.div
               initial={{opacity:0}}
               animate={{opacity:1}}
@@ -339,7 +356,7 @@ const Chats = () => {
 
             </motion.div>
           }
-        {console.log("CHumma is", chumma)}
+          
           {!chameleon &&
             <HeroText text="Z e r o - A n o n y m i t y" />
           }
@@ -452,27 +469,35 @@ const Chats = () => {
 
           </div>
 
-          {!showAnim && chameleon &&
+          {!showAnim && /*chameleon &&*/
           <motion.div 
           initial={{opacity:0}}
           animate={{opacity:1}}
           className="rounded-b-lg px-3 py-2  flex justify-center items-end ">
 
-            {spectatorMode ? <input
+            {spectatorMode ? 
+            <input
               id="messageInput"
               type="text"
               readOnly
               className="w-[95%] h-[35px] rounded-lg p-4 text-center text-sm border-[1px] border-black"
               placeholder="You can't send any message in spectator mode"
             />:
-            <input
+            <textarea
               id="messageInput"
               type="text"
-              className="w-[95%] h-[38px] max-h-[100px] rounded-lg p-4 text-sm border-[1px] border-black my-auto"
+              className="w-[95%] h-[38px] max-h-[100px] min-h-[38px] rounded-lg px-4 py-2 text-sm border-[1px] border-black mb-[14px] resize-none overflow-y-auto"
+              style={{scrollbarWidth: "none", whiteSpace: "pre-wrap"}}
               placeholder="Message"
+              rows={1}
+              onChange={(e) => setTextAreaMsg(e.target.value)}
+              ref={textAreaRef}
+
               onKeyDown={(e) => {
-                if (e.key === "Enter")
-                    sendMsg();
+                if (e.key === "Enter" && !e.shiftKey){
+                  e.preventDefault()
+                  sendMsg();
+                }
                 }}
             />}
             {!spectatorMode && <span className="flex bg-sendBtn h-16 w-16 bg-contain bg-no-repeat bg-center " 
