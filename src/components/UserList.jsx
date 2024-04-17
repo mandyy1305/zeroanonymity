@@ -57,9 +57,9 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
       chatCardControls.set({y: -240})
       chatCardControls.start({y:0, transition:{type: "stiff", ease: "easeInOut", duration: 0.3}})
       newButton.set({y: 0, x:0})
-      newButton.start({y:-150, x: 110, transition:{type: "stiff", ease: "easeInOut", duration: 0.3}})
+      newButton.start({y:-150, x: 0, transition:{type: "stiff", ease: "easeInOut", duration: 0.3}})
       findAChat.set({y: 0, x:0})
-      findAChat.start({y:-100, x: -80, transition:{type: "stiff", ease: "easeInOut", duration: 0.3}})
+      findAChat.start({y:-150, x: 0, transition:{type: "stiff", ease: "easeInOut", duration: 0.3}})
     }
     else{
       addNewChatControls.start({scaleY:0, transition:{type: "stiff", ease: "easeInOut", duration: 0.3}})
@@ -130,15 +130,17 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
         <motion.p animate={findAChat} className="text-lg mx-auto font-semibold">Find a chat to get started</motion.p>}
         <div className={"flex justify-evenly gap-1 px-1 mb-2"}>
           
-          {getChatExists() && spectatorMode ? 
-          
-            <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-11/12 rounded-xl pl-2" placeholder="Search"
-            onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
-            />:
+          {getChatExists() &&           
+            (spectatorMode ? 
             
-            <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-2/3 rounded-xl pl-2" placeholder="Search"
-            onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
-            />
+              <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-11/12 rounded-xl pl-2" placeholder="Search"
+              onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
+              />:
+              
+              <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-2/3 rounded-xl pl-2" placeholder="Search"
+              onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
+              />
+            )
           }
 
           {getChatExists() ? 

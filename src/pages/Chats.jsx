@@ -375,7 +375,7 @@ const Chats = () => {
                 
 
                 if(index === 0){
-                  dateComponent = <DateCard day={formattedDate} margin={"my-0"}/>
+                  dateComponent = <DateCard day={formattedDate} margin={"mb-5"}/>
                   setPrevDate(formattedDate)
                 }
                 else if(getPrevDate() !== formattedDate || getPrevDate() === "null"){
