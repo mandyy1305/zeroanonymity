@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
+
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -13,7 +15,8 @@ export default {
         trailExtended: "url('./src/img/TrailExtended.svg')",
         trailExtended2: "url('./src/img/TrailExtended2.svg')",
         chatBG:"url('./src/img/chatBG.svg')",
-        sendBtn:"url('./src/img/SendButton.svg')"
+        sendBtn:"url('./src/img/SendButton.svg')",
+        purpleBig:"url('./src/img/PurpleBigBg.svg')"
       },
       boxShadow: {
         "3xl": "0px 5px rgba(0, 0, 0, 1)",

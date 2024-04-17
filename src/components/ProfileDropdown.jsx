@@ -34,11 +34,12 @@ const ProfileDropdown = () => {
 
   return (
       //TODO: relative ko flex karna hai bina pos chode 
-      <div className="flex absolute right-12 items-center z-[60]">
+      <div className=" flex absolute right-12 items-center z-[60]">
         <motion.div
           animate={backgroundControls}
           className=" bg-white rounded-3xl h-10 w-[4.25rem]  flex justify-center items-center gap-3 "
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
+          
         >
             {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-md opacity-0">{user_1}</motion.span>}
             {isProfileDropdownOpen && <motion.button animate={logoutControls} className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] opacity-0">

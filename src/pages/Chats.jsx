@@ -327,7 +327,7 @@ const Chats = () => {
   //#region ----REACT RENDERING----
   return (
 
-    <div className="h-[calc(100%-96px)] flex  mx-2 pt-2" >
+    <div className="h-[calc(100%-96px)] flex dark:bg-black px-2 pt-2" >
       {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser} startAnimation={startAnimation} />}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
 
@@ -343,14 +343,14 @@ const Chats = () => {
             <motion.div
               initial={{opacity:0}}
               animate={{opacity:1}}
-              className=" bg-white h-[50px]  w-full items-center pl-4  border-b-[1px] rounded-t-lg border-black flex justify-between absolute">
+              className=" bg-white h-[50px] dark:bg-[#212121] w-full items-center pl-4  border-b-[1px] rounded-t-lg border-black flex justify-between absolute">
               <div className="flex">
                 <img
                   src="https://banner2.cleanpng.com/20180523/tha/kisspng-businessperson-computer-icons-avatar-clip-art-lattice-5b0508dc6a3a10.0013931115270566044351.jpg"
                   alt="I"
                   className="rounded-full h-8 w-8"
                 />
-                <span className="ml-4 text-lg font-semibold text-black ">{user_2}</span>
+                <span className="ml-4 text-lg font-semibold text-black dark:text-white">{user_2}</span>
               </div>
               <ChameleonMode setCurrentUserFunc = {setCurrentUser}/>
 
@@ -486,7 +486,7 @@ const Chats = () => {
             <textarea
               id="messageInput"
               type="text"
-              className="w-[95%] h-[38px] max-h-[100px] min-h-[38px] rounded-lg px-4 py-2 text-sm border-[1px] border-black mb-[14px] resize-none overflow-y-auto"
+              className="w-[95%] dark:bg-[#212121] h-[38px] max-h-[100px] min-h-[38px] dark:text-white rounded-lg px-4 py-2 text-sm border-[1px] border-black mb-[14px] resize-none overflow-y-auto"
               style={{scrollbarWidth: "none", whiteSpace: "pre-wrap"}}
               placeholder="Message"
               rows={1}

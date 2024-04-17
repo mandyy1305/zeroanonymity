@@ -2,7 +2,10 @@
 import { useEffect } from "react";
 import { setChameleon, setUserSelected, setUser_2, user_2 } from "../../backend/src/GlobalValues";
 import { FlatTree, motion, useAnimation } from "framer-motion";
-const UserlistItem = ({username, updateSelectedUserFunc,setReRender ,startAnimation, reRender}) => {
+const UserlistItem = ({username, updateSelectedUserFunc,setReRender ,startAnimation, reRender, darkMode}) => {
+
+
+    const textControls = useAnimation();
 
     const controls = useAnimation();
 
@@ -21,17 +24,30 @@ const UserlistItem = ({username, updateSelectedUserFunc,setReRender ,startAnimat
     useEffect(()=>{
       console.log("Hi guys")
       if(username !== user_2){
-        controls.set({backgroundColor: "#FFFFFF"})
+        controls.set({backgroundColor: darkMode ? "#212121" : "#fff"})
+        textControls.set({color: darkMode ? "#fff" : "#000"})
+
+      }
+      else{
+        controls.set({backgroundColor: darkMode ? "#C77CFF" : "#7D26EA"})
+        textControls.set({color: darkMode ? "#000" : "#fff"})
+
       }
     },[reRender])
 
     const onHoverEnter = () => {
-      if(username !== user_2)
-      controls.start({backgroundColor: ["#FFFFFF", "#FF0000"]})
+      if(username !== user_2){
+      controls.start({backgroundColor: [darkMode ? "#212121" : "#ffffff", darkMode ? "#C77DFF" : "#7D26EA"]})
+      textControls.start({color: [darkMode ? "#fff" : "#000", darkMode ? "#000" : "#fff"]})
+      }
+
     }
     const onHoverExit = () => {
-      if(username !== user_2)
-      controls.start({backgroundColor: ["#FF0000", "#FFFFFF"]})
+      if(username !== user_2){
+      controls.start({backgroundColor: [darkMode ? "#C77DFF" : "#7D26EA", darkMode ? "#212121" : "#ffffff"]})
+      textControls.start({color: [darkMode ? "#000" : "#fff", darkMode ? "#fff" : "#000"]})
+      }
+
     }
 
     return (
@@ -47,7 +63,11 @@ const UserlistItem = ({username, updateSelectedUserFunc,setReRender ,startAnimat
             alt="I"
             className="rounded-full h-12 w-12 "
           />
-          <span className="ml-4 text-lg  font-bold text-black">{username}</span>
+          <motion.span
+                animate={textControls}
+                onMouseEnter={onHoverEnter}
+                onMouseLeave={onHoverExit}
+                className="ml-4 text-lg  font-bold bg-transparent text-black">{username}</motion.span>
         </motion.div>
     );
   };

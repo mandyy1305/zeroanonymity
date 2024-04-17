@@ -14,8 +14,8 @@ const ChameleonMode = ({setCurrentUserFunc}) => {
     } 
 
     return(
-          <button className=" my-auto mr-20 h-[36px] flex justify-center items-center px-2 rounded-xl border-[2px] border-blue-600" onClick={handleClick}>
-            <p className=" font-bold text-blue-600">Chameleon Mode</p>
+          <button className=" my-auto mr-20 h-[36px] flex justify-center items-center px-2 rounded-xl border-[2px] dark:border-[#a775e4] border-blue-600" onClick={handleClick}>
+            <p className=" font-bold dark:text-[#a775e4] text-blue-600">Chameleon Mode</p>
           </button>
 
     )

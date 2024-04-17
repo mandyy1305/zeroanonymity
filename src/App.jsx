@@ -1,5 +1,6 @@
 import { Link, Outlet, NavLink } from "react-router-dom";
 import logo from "./img/Z-AnonymityLogo.svg";
+import { MdOutlineDarkMode } from "react-icons/md";
 
 import { IoMenu, IoClose } from "react-icons/io5";
 
@@ -26,8 +27,8 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col w-screen h-screen  mx-auto bg-yellow-100">
-      <nav className="  flex items-center justify-between mt-2 h-[45px] lg:mx-12">
+    <div className="flex flex-col w-screen h-screen  mx-auto bg-white">
+      <nav className=" bg-[#36007B] text-white w-full flex items-center justify-between h-[55px]">
         <div>
           <IoMenu
             className="lg:hidden "
@@ -36,34 +37,37 @@ function App() {
           />
         </div>
         <Link to="/" className="w-36 relative left-6">
-          <img src={logo} alt="Logo" />
+          <img className="" src={logo} alt="Logo" />
         </Link>
         <div className="hidden lg:flex justify-center items-center w-full gap-24 font-semibold text-lg ">
           <NavLink
-            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/"
           >
             Home
           </NavLink>
           <NavLink
-            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/faq"
           >
             FAQ
           </NavLink>
           <NavLink
-            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/about"
           >
             About
           </NavLink>
           <NavLink
-            className="hover:text-blue-800 border-solid border-gray-400 hover:border-b-2 px-2 "
+            className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/contact"
           >
             Contact
           </NavLink>
         </div>
+        <MdOutlineDarkMode size={25}/>
+
+
         <ProfileDropdown />
       </nav>
 

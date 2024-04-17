@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 a.active {
-  @apply border-b-2 text-blue-800;
+  @apply border-b-2;
 }
 
 hr {
