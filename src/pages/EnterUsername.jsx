@@ -56,8 +56,8 @@ const EnterUsername = () => {
     //for bakchodi
     // database se fetch krna pdega ki username active ya nhi or uske baad idhr show or hide kr denge.   
     return (
-        <div className="bg-purpleBig bg-no-repeat bg-cover flex justify-center items-center h-full flex-col ">
-                <span className=" text-3xl text-white font-bold align-middle">Enter Username:</span>
+        <div className="bg-blueBig dark:bg-purpleBig bg-no-repeat bg-cover flex justify-center items-center h-full flex-col ">
+                <span className=" text-3xl dark:text-white font-bold align-middle">Enter Username:</span>
                 <div className="flex justify-around items-center mt-4 w-11/12 sm:w-2/3 md:w-[450px] h-12">
                     <input className="bg-white border-[2px] text-base border-black rounded-xl h-10 sm:h-12 px-2 sm:px-4 py-2 w-4/5 mx-2" placeholder="I am..." id="UsernameInput" onChange={(e)=>setUserId(e.target.value)} onKeyDown={(e) => {if (e.key === "Enter")
                     GoBtnPressed();

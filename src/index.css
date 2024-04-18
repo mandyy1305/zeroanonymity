@@ -10,6 +10,9 @@ hr {
   border-top: 1px solid #baacac;
 }
 
+.darkicon{
+  transform: rotate(180deg);
+}
 /* @keyframes bounce {
     50% {
         transform: translateY(-25%);

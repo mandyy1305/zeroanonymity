@@ -34,11 +34,13 @@ function App() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+
+
   }, [darkMode]);
 
   return (
-    <div className="flex flex-col w-screen h-screen  mx-auto bg-white">
-      <nav className=" bg-[#36007B] text-white w-full flex items-center justify-between h-[55px]">
+    <div className="flex flex-col w-screen h-screen  mx-auto bg-[#e4f5ff]">
+      <nav className="bg-[#003049] dark:bg-[#36007B] text-white w-full flex items-center justify-between h-[55px]">
         <div>
           <IoMenu
             className="lg:hidden "
@@ -76,7 +78,9 @@ function App() {
           </NavLink>
         </div>
         {/* <MdOutlineDarkMode size={25} onClick={() => {setDarkMode(!darkMode);}}/> */}
-        <FaCircleHalfStroke  size={25} color="#7f7f7f"/>
+        <FaCircleHalfStroke className="darkicon" 
+        style={{rotate:darkMode ? "180deg" : "0deg"}}
+        onClick={() => {setDarkMode(!darkMode);}} size={25} color="#fff"/>
 
 
         <ProfileDropdown darkMode={darkMode}/>

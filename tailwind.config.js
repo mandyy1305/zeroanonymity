@@ -16,7 +16,10 @@ export default {
         trailExtended2: "url('./src/img/TrailExtended2.svg')",
         chatBG:"url('./src/img/chatBG.svg')",
         sendBtn:"url('./src/img/SendButton.svg')",
-        purpleBig:"url('./src/img/PurpleBigBg.svg')"
+        purpleBig:"url('./src/img/PurpleBigBg.svg')",
+        blueBig:"url('./src/img/ChatBGBlue.svg')",
+        blueSmall:"url('./src/img/ChatBGL.svg')"
+
       },
       boxShadow: {
         "3xl": "0px 5px rgba(0, 0, 0, 1)",

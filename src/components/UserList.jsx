@@ -136,7 +136,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
 
           {getChatExists() ? 
           
-          !spectatorMode && <button className="bg-[#7D26EA] dark:bg-[#212121] dark:text-[#BF97FF] h-12 w-1/3 text-sm border-white border-[1.3px] rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity);}}>
+          !spectatorMode && <button className="bg-[#006EA7] dark:bg-[#212121] dark:text-[#BF97FF] h-12 w-1/3 text-sm border-white border-[1.3px] rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity);}}>
             + Start new chat
           </button> : 
           
@@ -161,7 +161,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
             onChange={(e)=>setNewUsername(e.target.value)}
           />
           {newUsername !=="" && !usernamePerm && <p className="bg-[#00000000] mt-2 text-sm text-red-700 mb-5 mx-auto">*You can only use lowercase alphabets and underscore(_)</p>}
-          <button className=" dark:bg-[#BF97FF] font-medium border-[2px] text-[#7D26EA] dark:text-black dark:border-[#BF97FF] border-[#7D26EA] w-1/3 h-12 rounded-lg mx-auto" 
+          <button className=" dark:bg-[#BF97FF] font-medium border-[2px] text-[#006EA7] dark:text-black dark:border-[#BF97FF] border-[#006EA7] w-1/3 h-12 rounded-lg mx-auto" 
             onClick={() => {
               checkChatExistence();
               addNewChatControls.set({scaleY:0}) 

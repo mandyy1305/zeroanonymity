@@ -29,7 +29,7 @@ const UserlistItem = ({username, updateSelectedUserFunc,setReRender ,startAnimat
 
       }
       else{
-        controls.set({backgroundColor: darkMode ? "#C77CFF" : "#7D26EA"})
+        controls.set({backgroundColor: darkMode ? "#C77CFF" : "#006EA7"})
         textControls.set({color: darkMode ? "#000" : "#fff"})
 
       }
@@ -37,14 +37,14 @@ const UserlistItem = ({username, updateSelectedUserFunc,setReRender ,startAnimat
 
     const onHoverEnter = () => {
       if(username !== user_2){
-      controls.start({backgroundColor: [darkMode ? "#212121" : "#ffffff", darkMode ? "#C77DFF" : "#7D26EA"]})
+      controls.start({backgroundColor: [darkMode ? "#212121" : "#ffffff", darkMode ? "#C77DFF" : "#006EA7"]})
       textControls.start({color: [darkMode ? "#fff" : "#000", darkMode ? "#000" : "#fff"]})
       }
 
     }
     const onHoverExit = () => {
       if(username !== user_2){
-      controls.start({backgroundColor: [darkMode ? "#C77DFF" : "#7D26EA", darkMode ? "#212121" : "#ffffff"]})
+      controls.start({backgroundColor: [darkMode ? "#C77DFF" : "#006EA7", darkMode ? "#212121" : "#ffffff"]})
       textControls.start({color: [darkMode ? "#000" : "#fff", darkMode ? "#fff" : "#000"]})
       }
 
