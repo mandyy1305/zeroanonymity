@@ -330,11 +330,11 @@ const Chats = () => {
   //#region ----REACT RENDERING----
   return (
 
-    <div className="h-[calc(100%-96px)] flex dark:bg-black px-2 pt-2" >
+    <div className="h-[100%] flex dark:bg-black px-2 pt-2" >
       {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser} startAnimation={startAnimation} />}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
 
-        <div className="bg-chatBG bg-cover flex h-[106%] flex-col rounded-lg relative">
+        <div className="bg-chatBG bg-cover flex h-[91%] flex-col rounded-lg relative">
           
           {showAnim &&
             <div className="bg-chatBG bg-cover flex h-[100%] flex-col rounded-lg absolute z-50 w-full"></div>

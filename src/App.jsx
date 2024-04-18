@@ -1,6 +1,7 @@
 import { Link, Outlet, NavLink } from "react-router-dom";
 import logo from "./img/Z-AnonymityLogo.svg";
 import { MdOutlineDarkMode } from "react-icons/md";
+import { FaCircleHalfStroke } from "react-icons/fa6";
 
 import { IoMenu, IoClose } from "react-icons/io5";
 
@@ -36,7 +37,7 @@ function App() {
   }, [darkMode]);
 
   return (
-    <div className="flex flex-col w-screen h-screen  mx-auto bg-white dark:bg-black">
+    <div className="flex flex-col w-screen h-screen  mx-auto bg-white">
       <nav className=" bg-[#36007B] text-white w-full flex items-center justify-between h-[55px]">
         <div>
           <IoMenu
@@ -74,10 +75,11 @@ function App() {
             Contact
           </NavLink>
         </div>
-        <MdOutlineDarkMode size={25} onClick={() => {setDarkMode(!darkMode);}}/>
+        {/* <MdOutlineDarkMode size={25} onClick={() => {setDarkMode(!darkMode);}}/> */}
+        <FaCircleHalfStroke  size={25} color="#7f7f7f"/>
 
 
-        <ProfileDropdown />
+        <ProfileDropdown darkMode={darkMode}/>
       </nav>
 
       {isNavbarOpen && (

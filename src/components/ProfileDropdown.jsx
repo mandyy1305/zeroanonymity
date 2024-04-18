@@ -4,7 +4,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { user_1 } from "../../backend/src/GlobalValues";
 
 
-const ProfileDropdown = () => {
+const ProfileDropdown = ({darkMode}) => {
   const backgroundControls = useAnimation()
   const avatarControls = useAnimation()
   const usernameControls = useAnimation()
@@ -37,11 +37,11 @@ const ProfileDropdown = () => {
       <div className=" flex absolute right-12 items-center z-[60]">
         <motion.div
           animate={backgroundControls}
-          className=" bg-white rounded-3xl h-10 w-[4.25rem]  flex justify-center items-center gap-3 "
+          className=" bg-white dark:bg-slate-950 rounded-3xl h-10 w-[4.25rem]  flex justify-center items-center gap-3 "
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
           
         >
-            {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-black text-md opacity-0">{user_1}</motion.span>}
+            {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-black dark:text-white text-md opacity-0">{user_1}</motion.span>}
             {isProfileDropdownOpen && <motion.button animate={logoutControls} className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] opacity-0">
               Logout
             </motion.button>}
@@ -59,7 +59,7 @@ const ProfileDropdown = () => {
         <div className="absolute right-2"
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
         >   
-          {isProfileDropdownOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          {isProfileDropdownOpen ? <IoIosArrowUp  color= {darkMode ? "#fff" : "#000"} /> : <IoIosArrowDown color={darkMode ? "#fff" : "#000"}/>}
         </div>
       </div>
   );
