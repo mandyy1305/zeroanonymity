@@ -41,7 +41,7 @@ const ProfileDropdown = () => {
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
           
         >
-            {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-md opacity-0">{user_1}</motion.span>}
+            {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-black text-md opacity-0">{user_1}</motion.span>}
             {isProfileDropdownOpen && <motion.button animate={logoutControls} className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] opacity-0">
               Logout
             </motion.button>}

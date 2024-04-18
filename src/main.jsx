@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import Faq from "./pages/Faq.jsx"
@@ -16,6 +16,7 @@ import EnterUsername from "./pages/EnterUsername.jsx";
 import Chats from "./pages/Chats.jsx";
 import BackendEntry from "../backend/src/BackendEntry.jsx";
 
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />} errorElement={<div>Page Not Found!</div>}>
@@ -23,7 +24,7 @@ const router = createBrowserRouter(
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/enterUsername" element={<EnterUsername />} />
-      <Route path="/chats" element={<Chats/>} />
+      <Route path="/chats" element={<Chats />} />
       <Route path="faq" element={<Faq/>}/>
       <Route path="backend" element={<BackendEntry/>}/>
     </Route>

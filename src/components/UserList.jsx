@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import UserlistItem from "./UserlistItem";
-import { setUser_2, spectatorMode, user_1 } from "../../backend/src/GlobalValues";
+import { setChameleon, setUser_2, spectatorMode, user_1 } from "../../backend/src/GlobalValues";
 import {motion, useAnimate, useAnimation} from "framer-motion"
 
 import { createChat } from "../../backend/src/functions";
 import { query } from "firebase/firestore";
+import { useOutlet, useOutletContext } from "react-router-dom";
 
 
 
@@ -15,29 +16,27 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredArray, setFilteredArray] = useState(null);
   const [reRender, setReRender] = useState(false)
-
+  
   const[usernamePerm,setUsernamePerm]=useState(false);
   const regex = /^[a-z_]*$/;
-  // const [chatStatus,setChatStatus] = useState(false);
+  
   const addNewChatControls = useAnimation()
   const chatCardControls = useAnimation()
   const newButton = useAnimation()
   const findAChat = useAnimation()
+  
+  const context = useOutletContext()
 
   // Checks if a chat in db exists between the users
   const checkChatExistence = async () => {
-    if(chatCardList.includes(newUsername)){
-      // Chat Exists, just open that chat
-      console.log("Yems", chatCardList)
-      usernamePerm && await setUser_2(newUsername);
-      usernamePerm && updateSelectedUserFunc(newUsername)
-    }
-    else{
-      console.log("No", chatCardList)
+    if(!chatCardList.includes(newUsername)){
       usernamePerm && await createChat(user_1, newUsername);
-      usernamePerm && await setUser_2(newUsername);
-      usernamePerm && updateSelectedUserFunc(newUsername)
     }
+    usernamePerm && await setUser_2(newUsername);
+    usernamePerm && updateSelectedUserFunc(newUsername)
+    startAnimation();
+    setChameleon(true);
+    setReRender(!reRender)
   }
 
 
@@ -107,43 +106,16 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
   const getChatExists = () => {return sessionStorage.getItem('ChatExists') === 'true'}
   const setChatExists = (value) => {sessionStorage.setItem('ChatExists', value)}
 
-  const [darkMode, setDarkMode] = useState(false);
-
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
+    setReRender(!reRender)
+  }, [context.darkMode]);
 
   return (
-
-    // <div className="bg-white rounded-t-xl  w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col gap-1 overflow-auto no-scrollbar shadow-gray-900 shadow-2xl h-[110%]">
-      //{chatExist && <p className="text-black align-middle text-center  text-2xl mt-3 font-semibold">Recent Chats</p>}
-      //<div className={` flex flex-col gap-2 ${!chatExist && 'mt-[65%]'}`}>
-        //{!chatExist && <p className="text-lg mx-auto font-semibold ">Find a chat to get started</p>}
-        //<div className={"flex justify-evenly gap-1 px-1 mb-2"}>
-        //   {chatExist && spectatorMode ? 
-        //     <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-11/12 rounded-xl pl-2" placeholder="Search"
-        //   onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
-        //   />:
-          
-        //   <input type="text" className="bg-[#00000000] border-[1px] border-gray-500 h-12 w-2/3 rounded-xl pl-2" placeholder="Search"
-        //   onChange={(e)=>setSearchQuery(e.target.value)} id="newChatUsername"
-        //   />
-        // }
-
-          // {chatExist ? 
-          //   !spectatorMode && <button className="bg-[#006ea7] h-12 w-1/3 rounded-b-xl rounded-tl-xl font-semibold text-white" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity); onAnimate()}}>+ Start new chat</button> : 
-            
-          //   !spectatorMode &&<button className="bg-white h-[44px] w-1/3 rounded-xl border-[2px] border-slate-400 font-semibold text-blue-700 mt-2" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity);}}>+Add new chat</button>}
-
-
           
     <div 
     className="bg-white  dark:bg-[#212121] rounded-t-xl w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col gap-1 overflow-auto no-scrollbar shadow-gray-900 shadow-2xl h-[110%]">
-      {getChatExists() && <p  className="text-black dark:text-white align-middle text-center text-2xl font-semibold">Recent Chats</p>}      
+      {getChatExists() && <p 
+      className="text-black dark:text-white align-middle text-center text-2xl font-semibold">Recent Chats</p>}      
       <div className={` flex flex-col gap-2 ${!getChatExists() && 'mt-[65%]'}`}>
         {!getChatExists() && 
         <motion.p animate={findAChat} className="text-lg dark:text-white mx-auto font-semibold">Find a chat to get started</motion.p>}
@@ -204,7 +176,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
           { 
             (filteredArray !== null ? filteredArray : chatCardList).map((item) => {
               const username = item;
-              return <UserlistItem username={username} updateSelectedUserFunc = {updateSelectedUserFunc} startAnimation={startAnimation} setReRender={setReRender}  reRender={reRender} darkMode={darkMode}/>;
+              return <UserlistItem username={username} updateSelectedUserFunc = {updateSelectedUserFunc} startAnimation={startAnimation} setReRender={setReRender}  reRender={reRender} darkMode={context.darkMode}/>;
             })
           }
         </motion.div>

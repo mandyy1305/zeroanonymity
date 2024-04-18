@@ -9,6 +9,7 @@ import ProfileDropdown from "./components/ProfileDropdown";
 
 function App() {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false)
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -26,8 +27,16 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   return (
-    <div className="flex flex-col w-screen h-screen  mx-auto bg-white">
+    <div className="flex flex-col w-screen h-screen  mx-auto bg-white dark:bg-black">
       <nav className=" bg-[#36007B] text-white w-full flex items-center justify-between h-[55px]">
         <div>
           <IoMenu
@@ -65,7 +74,7 @@ function App() {
             Contact
           </NavLink>
         </div>
-        <MdOutlineDarkMode size={25}/>
+        <MdOutlineDarkMode size={25} onClick={() => {setDarkMode(!darkMode);}}/>
 
 
         <ProfileDropdown />
@@ -108,7 +117,7 @@ function App() {
           </Link>
         </div>
       )}
-      <Outlet />
+      <Outlet context={{darkMode, setDarkMode}}/>
     </div>
   );
 }

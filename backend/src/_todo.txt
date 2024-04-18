@@ -34,3 +34,9 @@ check for username validity inside userlist scroll view also
 cannot send on enter key press
 
 sendinngChats available on all messagees
+
+spectator mode + new user -> show div saying no chats available yet. try a diff username
+
+clear textbox on creating a new chat and also on search
+
+add a lil shadow on the chat box

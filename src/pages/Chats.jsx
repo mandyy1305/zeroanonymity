@@ -12,6 +12,7 @@ import { FlatTree, motion, useAnimation } from "framer-motion";
 import PulseLoader from "react-spinners/PulseLoader";
 import HeroText from "../components/HeroText";
 import DateCard from "../components/DateCard";
+import { useOutletContext } from "react-router-dom";
 
 //#endregion
 
@@ -35,7 +36,7 @@ const Chats = () => {
 
   const [textAreaMsg, setTextAreaMsg] = useState("")
   const textAreaRef = useRef(null)
-  
+
   //#endregion
   //TODO: chats loading everything everytime i click em
   //TODO: chumma ka kuch kar
@@ -230,9 +231,11 @@ const Chats = () => {
   },[chumma])
 
   useEffect(()=>{
-    console.log(textAreaMsg)
-    textAreaRef.current.style.height = "auto"
-    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px"
+    if(textAreaMsg.current){
+      console.log(textAreaMsg)
+      textAreaRef.current.style.height = "auto"
+      textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px"
+    }
   }, [textAreaMsg])
   
 
@@ -473,7 +476,7 @@ const Chats = () => {
           <motion.div 
           initial={{opacity:0}}
           animate={{opacity:1}}
-          className="rounded-b-lg px-3 py-2  flex justify-center items-end ">
+          className="rounded-b-lg px-3 pb-2  flex justify-center items-end ">
 
             {spectatorMode ? 
             <input
