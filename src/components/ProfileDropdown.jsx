@@ -1,15 +1,20 @@
 import { motion, useAnimation } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { user_1 } from "../../backend/src/GlobalValues";
+import { setChameleon, setSpectatorMode, setUserSelected, setUser_1, setUser_2, spectatorMode, user_1 } from "../../backend/src/GlobalValues";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { logout } from "../../backend/src/functions";
 
 
-const ProfileDropdown = ({darkMode}) => {
+const ProfileDropdown = ({darkMode, setIsLoggedIn}) => {
   const backgroundControls = useAnimation()
   const avatarControls = useAnimation()
   const usernameControls = useAnimation()
   const logoutControls = useAnimation()
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  const navigate = useNavigate()
+
   
   useEffect(() => {
     if(isProfileDropdownOpen){
@@ -34,17 +39,40 @@ const ProfileDropdown = ({darkMode}) => {
 
   return (
       //TODO: relative ko flex karna hai bina pos chode 
-      <div className=" flex absolute right-12 items-center z-[60]">
+      <div className=" flex absolute right-12 items-center z-[60] ">
         <motion.div
           animate={backgroundControls}
-          className=" bg-white dark:bg-slate-950 rounded-3xl h-10 w-[4.25rem]  flex justify-center items-center gap-3 "
+          className=" bg-white dark:bg-slate-950 rounded-3xl h-10 w-[4.25rem]  flex justify-center items-center gap-3 border-[1.8px] border-gray-300 dark:border-none"
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
           
         >
             {isProfileDropdownOpen && <motion.span animate={usernameControls} className="font-semibold text-black dark:text-white text-md opacity-0">{user_1}</motion.span>}
-            {isProfileDropdownOpen && <motion.button animate={logoutControls} className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 font-semibold rounded-[10px] opacity-0">
-              Logout
-            </motion.button>}
+            {isProfileDropdownOpen && 
+            (!spectatorMode ? 
+              <motion.button 
+                animate={logoutControls} 
+                onClick={async () => {
+                  if(user_1 !== ""){
+                    await logout(user_1);
+                    setIsLoggedIn(false)
+                    setSpectatorMode(false)
+                    setUser_1("")
+                    setUser_2("")
+                    setUserSelected(false)
+                    setChameleon(false)
+                    sessionStorage.clear()
+                    navigate("/")
+                  }
+                }}
+                className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20   self-center text-sm border-red-500 text-red-500 dark:text-white dark:bg-red-700 font-semibold rounded-[10px] opacity-0">
+                Logout
+              </motion.button> :
+            
+            <motion.button animate={logoutControls} className="drop border-[1px] p-1 lg:pt-1 lg:pb-1.5 w-20 self-center text-sm border-red-500 text-red-500 dark:text-white dark:bg-red-700 font-semibold rounded-[10px] opacity-0">
+              Spectating
+            </motion.button>
+
+            )}
 
         </motion.div>
         
@@ -59,7 +87,7 @@ const ProfileDropdown = ({darkMode}) => {
         <div className="absolute right-2"
           onClick={() => {setIsProfileDropdownOpen((prevState) => !prevState);}}
         >   
-          {isProfileDropdownOpen ? <IoIosArrowUp  color= {darkMode ? "#fff" : "#000"} /> : <IoIosArrowDown color={darkMode ? "#fff" : "#000"}/>}
+          {isProfileDropdownOpen ? <IoIosArrowUp  color= {darkMode ? "#fff" : "#000"} /> : <IoIosArrowDown color={darkMode ? "#fff" : "#000 "}/>}
         </div>
       </div>
   );

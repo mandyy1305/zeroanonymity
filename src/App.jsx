@@ -1,4 +1,4 @@
-import { Link, Outlet, NavLink } from "react-router-dom";
+import { Link, Outlet, NavLink, useNavigate } from "react-router-dom";
 import logo from "./img/Z-AnonymityLogo.svg";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { FaCircleHalfStroke } from "react-icons/fa6";
@@ -7,25 +7,64 @@ import { IoMenu, IoClose } from "react-icons/io5";
 
 import { useEffect, useState } from "react";
 import ProfileDropdown from "./components/ProfileDropdown";
+import { setChameleon, setSpectatorMode, setUserSelected, setUser_1, setUser_2, spectatorMode, user_1 } from "../backend/src/GlobalValues";
+import { logout } from "../backend/src/functions";
 
 function App() {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const navigate = useNavigate()
+
+  const logoutFunction = async () => {
+    if(user_1 !== ""){
+      await logout(user_1);
+      setIsLoggedIn(false)
+      setSpectatorMode(false)
+      setUser_1("")
+      setUser_2("")
+      setUserSelected(false)
+      setChameleon(false)
+      sessionStorage.clear()
+    }
+  }
+
+  const reloadFunction = async () => {
+    if(user_1 !== "" && !spectatorMode){
+      sessionStorage.clear()
+      sessionStorage.setItem("user_1", user_1)
+    }
+  }
+
 
   useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      console.log("<OKOKOKOK></OKOKOKOK>");
-      const confirmationMessage = "Are you sure you want to leave this page?";
-      event.returnValue = confirmationMessage;
-      return confirmationMessage;
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
+    window.addEventListener('beforeunload', reloadFunction);
+    
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener('beforeunload', reloadFunction);
     };
+  }, [history]);
+
+  useEffect(() => {
+    const func = async () => {
+      await logout(sessionStorage.getItem("user_1"));
+      sessionStorage.clear()
+      navigate("/")
+    }
+
+    setIsLoggedIn(false)
+
+    if(sessionStorage.getItem("user_1") !== null){
+      console.log("Yah boy")
+      func()
+    }
+    else{
+      sessionStorage.clear()
+      navigate("/")
+    }
+    if (sessionStorage.length === 0) {
+      navigate('/');
+    }
   }, []);
 
   useEffect(() => {
@@ -33,14 +72,15 @@ function App() {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
-    }
-
+      }
 
   }, [darkMode]);
 
+
+
   return (
-    <div className="flex flex-col w-screen h-screen  mx-auto bg-[#e4f5ff]">
-      <nav className="bg-[#003049] dark:bg-[#36007B] text-white w-full flex items-center justify-between h-[55px]">
+    <div className="flex flex-col w-screen h-screen  mx-auto bg-[#e4f5ff] dark:bg-[#f7ebff]">
+      <nav className="bg-[#003049] dark:bg-[#2c003f] text-white w-full flex items-center justify-between h-[55px]">
         <div>
           <IoMenu
             className="lg:hidden "
@@ -49,28 +89,34 @@ function App() {
           />
         </div>
         <Link to="/" className="w-36 relative left-6">
-          <img className="" src={logo} alt="Logo" />
+          <img 
+            onClick={logoutFunction}
+          className="pb-1" src={logo} alt="Logo" />
         </Link>
         <div className="hidden lg:flex justify-center items-center w-full gap-24 font-semibold text-lg ">
           <NavLink
+            onClick={logoutFunction}
             className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/"
           >
             Home
           </NavLink>
           <NavLink
+            onClick={logoutFunction}
             className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/faq"
           >
             FAQ
           </NavLink>
           <NavLink
+            onClick={logoutFunction}
             className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/about"
           >
             About
           </NavLink>
           <NavLink
+            onClick={logoutFunction}
             className="hover:text-zinc-400 border-solid border-gray-400 hover:border-b-2 px-2 "
             to="/contact"
           >
@@ -78,12 +124,12 @@ function App() {
           </NavLink>
         </div>
         {/* <MdOutlineDarkMode size={25} onClick={() => {setDarkMode(!darkMode);}}/> */}
-        <FaCircleHalfStroke className="darkicon" 
-        style={{rotate:darkMode ? "180deg" : "0deg"}}
-        onClick={() => {setDarkMode(!darkMode);}} size={25} color="#fff"/>
+        <FaCircleHalfStroke className="darkicon absolute right-3 z-[70]" 
+          style={{rotate:darkMode ? "180deg" : "0deg"}}
+          onClick={() => {setDarkMode(!darkMode);}} size={25} color="#fff"
+        />
+        {isLoggedIn && <ProfileDropdown darkMode={darkMode} setIsLoggedIn={setIsLoggedIn}/>}
 
-
-        <ProfileDropdown darkMode={darkMode}/>
       </nav>
 
       {isNavbarOpen && (
@@ -123,7 +169,7 @@ function App() {
           </Link>
         </div>
       )}
-      <Outlet context={{darkMode, setDarkMode}}/>
+      <Outlet context={{darkMode, setDarkMode, setIsLoggedIn}}/>
     </div>
   );
 }

@@ -44,9 +44,6 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
     addNewChatControls.set({scaleY:0, originY: 0});
   }, [])
 
-  useEffect(()=>{
-    console.log("Hello")
-  }, [setReRender])
 
   useEffect(()=>{
     if(serachPanelVisiblity){
@@ -108,17 +105,24 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
 
   useEffect(() => {
     setReRender(!reRender)
-  }, [context.darkMode]);
+  }, [context.darkMode, chatCardList]);
 
   return (
           
     <div 
     className="bg-white  dark:bg-[#212121] rounded-t-xl w-full ml-[2px] lg:ml-0 lg:w-1/3 p-2 flex flex-col gap-1 overflow-auto no-scrollbar shadow-gray-900 shadow-2xl h-[110%]">
       {getChatExists() && <p 
-      className="text-black dark:text-white align-middle text-center text-2xl font-semibold">Recent Chats</p>}      
+      className="text-black dark:text-white align-middle text-center text-2xl font-semibold pb-2">Recent Chats</p>}      
       <div className={` flex flex-col gap-2 ${!getChatExists() && 'mt-[65%]'}`}>
         {!getChatExists() && 
-        <motion.p animate={findAChat} className="text-lg dark:text-white mx-auto font-semibold">Find a chat to get started</motion.p>}
+        (!spectatorMode 
+          ?
+            <motion.p animate={findAChat} className="text-lg dark:text-white mx-auto font-semibold">Find a chat to get started</motion.p>
+          :
+            <p className="text-lg dark:text-white mx-auto font-semibold">No chats available!</p>
+
+        )
+        }
         <div className={"flex justify-evenly gap-1 px-1 mb-2"}>
           
           {getChatExists() &&           
@@ -142,8 +146,8 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
           
           !spectatorMode && <motion.button 
           animate={newButton}
-          className="bg-white h-[44px] w-1/3 rounded-xl border-[2px] px-2 text-sm border-slate-400 dark:bg-[#212121] dark:border-white dark:text-[#BF97FF] font-semibold text-[#7D26EA] mt-2" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity);}}>
-            +Start new chat
+          className="bg-white h-[44px] w-1/3 rounded-xl border-[2px] px-2 text-sm border-[#006EA7] dark:bg-[#212121] dark:border-white dark:text-[#BF97FF] font-semibold text-[#006EA7] mt-2" onClick={()=>{setSearchPanelVisiblity(!serachPanelVisiblity);}}>
+            + Start new chat
           </motion.button>}
 
           {/* {console.log(serachPanelVisiblity)} */}
@@ -157,7 +161,7 @@ const UserList = ({chatCardList, updateSelectedUserFunc, startAnimation}) => {
           animate={addNewChatControls}
         >
           <p className=" text-lg dark:text-white font-semibold ml-8">Start a new chat :</p>
-          <input type="text" className="bg-[#00000000] border-[2px] border-gray-500 dark:border-white h-12 w-5/6  dark:text-white rounded-xl pl-2 mx-auto mb-2 mt-1 focus:outline-black dark:focus:outline-white" placeholder="Enter Username" 
+          <input maxLength="20" type="text" className="bg-[#00000000] border-[2px] border-gray-500 dark:border-white h-12 w-5/6  dark:text-white rounded-xl pl-2 mx-auto mb-2 mt-1 focus:outline-black dark:focus:outline-white" placeholder="Enter Username" 
             onChange={(e)=>setNewUsername(e.target.value)}
           />
           {newUsername !=="" && !usernamePerm && <p className="bg-[#00000000] mt-2 text-sm text-red-700 mb-5 mx-auto">*You can only use lowercase alphabets and underscore(_)</p>}

@@ -5,7 +5,8 @@ import SentMsg from "../components/SentMsg";
 import UserList from "../components/UserList";
 import { getChatsListener, getChatListListener, sendChat, getChats, getEarliestChatTimestamp, getChatsBeforeTimestamp, getSessionStorage } from "../../backend/src/functions";
 import { Timestamp, serverTimestamp } from "firebase/firestore";
-
+import logo_black from "../img/Z-Logo-black.svg";
+import logo_white from "../img/Z-AnonymityLogo.svg";
 import { chameleon,  setUserSelected, spectatorMode, userSelected, user_1, user_2 } from "../../backend/src/GlobalValues";
 import ChameleonMode from "../components/ChameleonMode";
 import { FlatTree, motion, useAnimation } from "framer-motion";
@@ -17,7 +18,7 @@ import { useOutletContext } from "react-router-dom";
 //#endregion
 
 const Chats = () => {
-
+  
   //#region ----USESTATE VARIABLES----
   const[chats,setChats]=useState(null);
   const[sendingChats, setSendingChats] = useState(new Map());
@@ -36,6 +37,8 @@ const Chats = () => {
 
   const [textAreaMsg, setTextAreaMsg] = useState("")
   const textAreaRef = useRef(null)
+
+  const context = useOutletContext()
 
   //#endregion
   //TODO: chats loading everything everytime i click em
@@ -128,8 +131,8 @@ const Chats = () => {
       //2. CURRENTLY NO CHATS ARE BEING LOADED
       //3. THE TOTAL NUMBER OF CHATS EXCEED THE SCROLL VIEW
       //4. THERE ARE CHATS AVAILABLE IN THE DB
-      console.log(container.scrollTop === 0 , !loadingMoreChats , container.scrollHeight >= container.clientHeight
-      , getChatAvailability(user_2), selectedUser, user_2)
+      //console.log(container.scrollTop === 0 , !loadingMoreChats , container.scrollHeight >= container.clientHeight
+      //, getChatAvailability(user_2), selectedUser, user_2)
       if (container.scrollTop === 0 && !loadingMoreChats && container.scrollHeight >= container.clientHeight && getChatAvailability(user_2)) {
           setPreviousScrollHeight( container.scrollHeight );
           await loadMoreChats()
@@ -146,7 +149,7 @@ const Chats = () => {
 
     const msgText = (document.getElementById("messageInput").value).trim();
 
-    console.log("finalmsg", msgText)
+    //console.log("finalmsg", msgText)
     if(msgText!=""){
       document.getElementById("messageInput").value = '';
       const newID = new Date().toISOString() + '+' +user_1
@@ -184,10 +187,12 @@ const Chats = () => {
   // This runs only once and keeps calling itself unless user_2 is not mentioned
   useEffect(() => {
     setIsDataReceived(false)
+    context.setIsLoggedIn(true)
+
     // Prevents user_1 to be empty by any chance
     const checkVariable = () => {
-      if (user_1 === "") {
-        console.log("running")
+      if (user_1 === "" && sessionStorage.length !== 0) {
+        //console.log("running")
         setTimeout(checkVariable, 100);
       }
       
@@ -225,13 +230,13 @@ const Chats = () => {
   
   useEffect(()=>{
     if(userSelected){
-      //console.log("Changed")
+      ////console.log("Changed")
       startAnimation()
     }
   },[chumma])
 
   useEffect(()=>{
-    if(textAreaMsg.current){
+    if(textAreaRef.current){
       console.log(textAreaMsg)
       textAreaRef.current.style.height = "auto"
       textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px"
@@ -330,11 +335,11 @@ const Chats = () => {
   //#region ----REACT RENDERING----
   return (
 
-    <div className="h-[100%] flex dark:bg-black px-2 pt-2" >
+    <div className="h-[100%] flex dark:bg-black px-2 pt-2 pb-2" >
       {chatList !== null && <UserList chatCardList = {chatList} updateSelectedUserFunc = {setSelectedUser} startAnimation={startAnimation} />}
       <div className=" w-1 invisible lg:visible lg:w-5/6 px-2">
-
-        <div className="dark:bg-chatBG bg-blueSmall bg-cover flex h-[91%] flex-col rounded-lg relative">
+        {/*TODO: 625px hardcore kar rakha hai. look into that. */}
+        <div className=" dark:bg-chatBG bg-blueSmall bg-cover flex flex-col h-[625px] rounded-lg relative">
           
           {showAnim &&
             <div className="dark:bg-chatBG bg-blueSmall bg-cover flex h-[100%] flex-col rounded-lg absolute z-50 w-full"></div>
@@ -375,12 +380,18 @@ const Chats = () => {
             {getChatAvailability(user_2) && chatContainerRef.current.scrollHeight !== chatContainerRef.current.clientHeight &&
             <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:"60px"}}><PulseLoader size={10}/></div>}
             {/* Messages */}
-            {console.log()}
+            {/*console.log()*/}
             {
               chats && 
               (Object.entries(chats).length === 0 
               ?
-              <p>Hellooo</p>
+              <div className="flex items-center justify-center w-full h-full">
+                <div className="items-center flex flex-col w-60 bg-white dark:bg-[#212121] rounded-xl p-3">
+                  <span className="font-bold text-md dark:text-white">No messages here yet...</span>
+                  <span className="w-32 text-center dark:text-white">Send a message to start a chat</span>
+                  <img  src={context.darkMode ? logo_white : logo_black} alt="Logo" />
+                </div>
+              </div>
               :              
               Object.entries(chats).reverse().map(([id, data], index, array) =>
               {
@@ -476,14 +487,14 @@ const Chats = () => {
           <motion.div 
           initial={{opacity:0}}
           animate={{opacity:1}}
-          className="rounded-b-lg px-3 pb-2  flex justify-center items-end ">
+          className="rounded-b-lg px-3  flex justify-center items-end ">
 
             {spectatorMode ? 
             <input
               id="messageInput"
               type="text"
               readOnly
-              className="w-[95%] h-[35px] rounded-lg p-4 text-center text-sm border-[1px] border-black"
+              className="w-[95%] h-[35px] rounded-lg p-4 text-center text-sm border-[1px] border-black dark:bg-[#212121]"
               placeholder="You can't send any message in spectator mode"
             />:
             <textarea

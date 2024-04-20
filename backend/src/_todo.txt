@@ -1,42 +1,37 @@
 usernames can contain only alphanumeric chars.
 set character limit for messages
-display messages when sent with a clock. and then a tick when it is sent to db
-usernames should be only in lowercase
 
-start texting in center
+
+
 uncomment heartbeatstart signal
 
 prevent back from chatPage to EnterUsername Page
-change panel of UsernameInUse from yes/no to only button of enter spectator mode and choose another username.
 
-logout button to be added
+
 
 add security - firebase keys visible from chrome
-shift+enter
-new message notif on screen when scrolled up
 
 TODO: your chats are not encrypted. not only us literally anyone can read whatever you send👍
-TODO: dont call data from db if the user selects the same selected user in chat card
 
-if logged in as chameleon with full access then logout before switching accounts
 
-show logged in only after logging in and not on main screen
+
 user is logged in if i create a new chat with them
 
 need to add a div when no chats are present
 
-logout from everywhere when clicked on other buttons
+
 
 limit character length for username
 
-check for username validity inside userlist scroll view also
-
-cannot send on enter key press
 
 sendinngChats available on all messagees
 
-spectator mode + new user -> show div saying no chats available yet. try a diff username
 
 clear textbox on creating a new chat and also on search
 
-add a lil shadow on the chat box
+
+chatbox is getting smol on no texts
+
+when user list is rerendered not the correct chat is colored
+
+limit total users a username can chat to. for eg, ek username bas 100 se baat kar sakta hai. usme bhi hai ki agar ek acc mai 100 ho chuke and koi aur mai bas 5, toh wo agar pehle waale se baat karna chaahe toh kya hoga. look into it.
